@@ -89,9 +89,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     Log.i(TAG, "invoke: age=" + user.getKakaoAccount().getAgeRange());
                     kakaonickname.setText(user.getKakaoAccount().getProfile().getNickname());
                     Glide.with(kakaoprofileImage).load(user.getKakaoAccount().getProfile().getThumbnailImageUrl()).circleCrop().into(kakaoprofileImage);
-                    //
 
-                    mButtonKakaoLogin.setVisibility(View.GONE);
+                    mButtonKakaoLogin.setVisibility(View.VISIBLE);
                 } else { //로그아웃 상태
                     mButtonKakaoLogin.setVisibility(View.VISIBLE);
                     kakaonickname.setText(null);
