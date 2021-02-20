@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kakao.sdk.auth.LoginClient;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
@@ -18,7 +19,7 @@ import kotlin.jvm.functions.Function2;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
-    private Button mButtonKakaoLogin;
+    private FloatingActionButton kakao, naver, facebook;
     private TextView kakaonickname;
     private ImageView kakaoprofileImage;
     private static final String TAG = "MainActivity";
@@ -49,13 +50,21 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.mButtonKakaoLogin:
+            case R.id.kakao:
                 Log.i("GongGong", "카카오 로그인");
                 if (LoginClient.getInstance().isKakaoTalkLoginAvailable(MainActivity.this)) { //카카오 설치되어있는지 확인
                     LoginClient.getInstance().loginWithKakaoTalk(MainActivity.this, callback);
                 } else { //카톡이 설치되어있지 않을시
                     LoginClient.getInstance().loginWithKakaoAccount(MainActivity.this, callback);
                 }
+                break;
+
+            case R.id.naver:
+                Log.i("GongGong", "네이버 로그인");
+                break;
+
+            case R.id.facebook:
+                Log.i("GongGong", "네이버 로그인");
                 break;
 
             default:
@@ -66,12 +75,18 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private void init() {
 
         //kakao
-        mButtonKakaoLogin = (Button) findViewById(R.id.mButtonKakaoLogin);
-        mButtonKakaoLogin.setOnClickListener(this);
+        kakao = (FloatingActionButton) findViewById(R.id.kakao);
+        kakao.setOnClickListener(this);
         kakaonickname = findViewById(R.id.nickname);
         kakaoprofileImage = findViewById(R.id.profile);
 
+        //naver
+        naver = (FloatingActionButton) findViewById(R.id.naver);
+        naver.setOnClickListener(this);
 
+        //facebook
+        facebook = (FloatingActionButton) findViewById(R.id.facebook);
+        facebook.setOnClickListener(this);
     }
 
     private void updateKakaoLoginUi() {
@@ -88,9 +103,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
                     kakaonickname.setText(user.getKakaoAccount().getProfile().getNickname());
                     Glide.with(kakaoprofileImage).load(user.getKakaoAccount().getProfile().getThumbnailImageUrl()).circleCrop().into(kakaoprofileImage);
 
-                    mButtonKakaoLogin.setVisibility(View.VISIBLE);
+                    kakao.setVisibility(View.VISIBLE);
                 } else { //로그아웃 상태
-                    mButtonKakaoLogin.setVisibility(View.VISIBLE);
+                    kakao.setVisibility(View.VISIBLE);
                     kakaonickname.setText(null);
                     kakaoprofileImage.setImageBitmap(null);
 
