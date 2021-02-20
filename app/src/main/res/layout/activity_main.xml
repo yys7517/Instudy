@@ -1,81 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="#ffffff"
-              android:orientation="vertical"
-              tools:context=".MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <TextView
-            android:layout_marginTop="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:text="공부를 공유하다"
-            android:textColor="#000000"
-            android:textSize="30dp"
-            android:textStyle="bold"/>
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:text="공부를 공유하다"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        android:textStyle="bold" />
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="bottom|center"
-            android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="bottom|center"
+        android:orientation="vertical">
 
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
 
             <ImageView
-                    android:id="@+id/profile"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"/>
+                android:id="@+id/profile"
+                android:layout_width="200dp"
+                android:layout_height="200dp" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:id="@+id/nickname"/>
+            <TextView
+                android:id="@+id/nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/naver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#00C73C"
+                android:tint="@android:color/white"
+                app:borderWidth="0dp"
+                app:srcCompat="@drawable/naver" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#5890FF"
+                android:tint="@android:color/white"
+                app:borderWidth="0dp"
+                app:srcCompat="@drawable/facebook" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/kakao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#FEE500"
+                android:tint="#000000"
+                app:borderWidth="0dp"
+                app:srcCompat="@drawable/kakao" />
 
         </LinearLayout>
 
 
-        <Button
-                android:id="@+id/mButtonKakaoLogin"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="bottom"
-                android:layout_marginRight="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="50dp"
-                android:background="@drawable/kakao_login"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/naver"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/naver"
-                android:tint="@android:color/white"/>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/facebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/facebook"
-                android:tint="@android:color/white"/>
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/kakao"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/kakao"
-                android:tint="@android:color/white"/>
-
     </LinearLayout>
-
 
 
 </LinearLayout>
