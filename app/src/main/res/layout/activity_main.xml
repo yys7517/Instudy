@@ -55,7 +55,27 @@
                 android:layout_marginBottom="50dp"
                 android:background="@drawable/kakao_login"/>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/naver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/naver"
+                android:tint="@android:color/white"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/facebook"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/facebook"
+                android:tint="@android:color/white"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/kakao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/kakao"
+                android:tint="@android:color/white"/>
 
     </LinearLayout>
+
+
 
 </LinearLayout>

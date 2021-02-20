@@ -1,8 +1,6 @@
 package com.example.gonggong;
 
 import android.app.Activity;
-
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
