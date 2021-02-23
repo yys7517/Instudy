@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.gonggong">
+    package="com.example.gonggong">
 
-    <uses-permission android:name="android.permission.INTERNET"/> <!-- API 23레벨 이상 필요x-->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- API 23레벨 이상 필요x-->
 
     <application
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-            android:name=".KakaoApplication">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+        android:name=".KakaoApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+        <activity android:name=".IntroActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".LoginActivity">
+
+        </activity>
+
+        <activity android:name=".MainActivity">
+
         </activity>
 
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
-                <data android:host="oauth"
-                      android:scheme="kakaocbc15b278157a56287ea87c5ae4b7b82"/>
+                <data
+                    android:host="oauth"
+                    android:scheme="kakaocbc15b278157a56287ea87c5ae4b7b82" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
