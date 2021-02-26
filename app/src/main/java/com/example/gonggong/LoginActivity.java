@@ -67,6 +67,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             case R.id.mButtonNaver:
                 Log.i("GongGong", "네이버 로그인");
                 Intent intent = new Intent(this, MainActivity.class);
+                finish();
                 startActivity(intent);
                 break;
 
