@@ -1,20 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ffffff"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:background="#fafafc"
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="MainActivity"
-        android:textColor="#000000"
-        android:textSize="30dp"
-        android:textStyle="bold" />
+>
 
-</LinearLayout>
+
+
+    <!-- 탭 바 클릭시 마다 교체될 프래그먼트-->
+    <!--겹치지 않게 해주는 레이아웃이 framelayout 이다.-->
+    <FrameLayout
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/nav_view"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+    <!--    app:navGraph="@navigation/mobile_navigation"-->
+    <!--    app:defaultNavHost="true"-->
+
+
+
+    <!-- 하단 탭 네비게이션 뷰 -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="?android:attr/windowBackground"
+            app:itemIconSize="42dp"
+            app:labelVisibilityMode="unlabeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/bottom_nav_menu" />
+    <!--  원래 위의 itemIconSize는 아래 속성이었음  -->
+    <!--    @dimen/day_label_focus_size_events_disabled-->
+    <!--app:itemIconTint="@color/colorBlack"-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
