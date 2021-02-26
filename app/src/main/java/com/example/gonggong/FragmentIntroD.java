@@ -6,16 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-public class FragmentIntroForth extends Fragment {
+public class FragmentIntroD extends Fragment {
     private Button mButtonStart;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_intro4, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_introd, container, false);
 
         mButtonStart = (Button) rootView.findViewById(R.id.mButtonStart);
         mButtonStart.setOnClickListener(new View.OnClickListener() {

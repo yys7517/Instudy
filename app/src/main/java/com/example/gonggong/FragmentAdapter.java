@@ -1,7 +1,5 @@
 package com.example.gonggong;
 
-import android.content.Intent;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -23,16 +21,16 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
         switch (index) {
             case 0:
-                return new FragmentIntroFirst();
+                return new FragmentIntroA();
 
             case 1:
-                return new FragmentIntroSecond();
+                return new FragmentIntroB();
 
             case 2:
-                return new FragmentIntroThird();
+                return new FragmentIntroC();
 
             default:
-                return new FragmentIntroForth();
+                return new FragmentIntroD();
         }
     }
 
