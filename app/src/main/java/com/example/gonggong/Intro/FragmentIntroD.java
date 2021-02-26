@@ -1,4 +1,4 @@
-package com.example.gonggong;
+package com.example.gonggong.Intro;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
+
+import com.example.gonggong.LoginActivity;
+import com.example.gonggong.R;
 
 public class FragmentIntroD extends Fragment {
     private Button mButtonStart;

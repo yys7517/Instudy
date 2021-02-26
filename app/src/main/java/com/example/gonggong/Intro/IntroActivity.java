@@ -1,4 +1,4 @@
-package com.example.gonggong;
+package com.example.gonggong.Intro;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
@@ -7,9 +7,11 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.gonggong.Intro.FragmentAdapter;
+import com.example.gonggong.R;
 
 import me.relex.circleindicator.CircleIndicator3;
 
