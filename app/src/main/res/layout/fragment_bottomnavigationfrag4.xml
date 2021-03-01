@@ -1,14 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".BottomNavigationFrag4">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:background="@color/colorWhite"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="4번"/>
+            android:layout_height="0dp"
+            android:background="#f4f4f4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="0dp">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff">
+            <!-- 회색바 -->
+            <View
+                    android:id="@+id/profile_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="80dp"
+                    android:background="#e3e3e3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            <!-- 사진 테두리 -->
+            <ImageView
+                    android:id="@+id/img_profile_face_border"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:src="@drawable/circle"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_bar"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/profile_bar"
+                    app:tint="@color/colorPrimary"/>
+            <!-- 프로필 사진 -->
+
+            <androidx.cardview.widget.CardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:cardCornerRadius="100dp"
+                    app:layout_constraintBottom_toBottomOf="@id/img_profile_face_border"
+                    app:layout_constraintEnd_toEndOf="@id/img_profile_face_border"
+                    app:layout_constraintStart_toStartOf="@id/img_profile_face_border"
+                    app:layout_constraintTop_toTopOf="@+id/img_profile_face_border">
+                <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/test"/>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 프로필 이름 텍스트 -->
+            <TextView
+                    android:id="@+id/txt_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:fontFamily="@font/notosanscjkkrmedium"
+                    android:text="킹용현"
+                    android:textColor="#212529"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/img_profile_face_border"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_bar"/>
+
+            <!--팔로잉 수 -->
+            <TextView
+                    android:id="@+id/txt_profile_following_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:padding="5dp"
+                    android:text="12"
+                    android:textColor="#212529"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/txt_profile_following"
+                    app:layout_constraintTop_toBottomOf="@id/profile_bar"/>
+
+            <!--팔로잉 텍스트 -->
+            <TextView
+                    android:id="@+id/txt_profile_following"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="13dp"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:padding="5dp"
+                    android:text="팔로잉"
+                    android:textColor="#212529"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@id/txt_profile_follower_number"
+                    app:layout_constraintTop_toBottomOf="@id/profile_bar"/>
+
+            <!--팔로워 수 -->
+            <TextView
+                    android:id="@+id/txt_profile_follower_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:layout_marginRight="16dp"
+                    android:padding="5dp"
+                    android:text="1387M"
+                    android:textColor="#212529"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@id/txt_profile_follower"
+                    app:layout_constraintTop_toBottomOf="@id/profile_bar"/>
+
+            <!--팔로워 텍스트 -->
+            <TextView
+                    android:id="@+id/txt_profile_follower"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:padding="5dp"
+                    android:text="팔로워"
+                    android:textColor="#212529"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@id/img_profile_face_border"
+                    app:layout_constraintTop_toBottomOf="@id/profile_bar"/>
+
+            <!-- 소개 -->
+            <TextView
+                    android:id="@+id/txt_profile_intoduce"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:text="서비스 기획과 리서치를 좋아하는 UXUI 주니어 개발자입니다.
+요즘은 구독, 개인화 서비스에 관심이 많습니다."
+                    android:textColor="#212529"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txt_profile_following"/>
+
+            <TextView
+                    android:id="@+id/txt_job1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/text_backgruond"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="Kotlin"
+                    android:textColor="#212529"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_profile_intoduce" />
+
+            <!-- 두 번째 직무-->
+            <TextView
+                    android:id="@+id/txt_job2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/text_backgruond"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="Node.js"
+                    android:textColor="#212529"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/txt_job1"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_profile_intoduce" />
+
+            <!-- 세 번째 직무-->
+            <TextView
+                    android:id="@+id/txt_job3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/text_backgruond"
+                    android:fontFamily="@font/notosanscjkkrregular"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="4dp"
+                    android:text="Java"
+                    android:textColor="#212529"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/txt_job2"
+                    app:layout_constraintTop_toBottomOf="@+id/txt_profile_intoduce" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
