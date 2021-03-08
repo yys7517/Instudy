@@ -1,15 +1,13 @@
 package com.example.gonggong;
 
 import android.view.MenuItem;
-import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import com.example.gonggong.R;
-import com.example.gonggong.ui.BottomNavigationFrag1;
-import com.example.gonggong.ui.BottomNavigationFrag2;
-import com.example.gonggong.ui.BottomNavigationFrag3;
-import com.example.gonggong.ui.BottomNavigationFrag4;
+import com.example.gonggong.ui.home.BottomNavigationFrag1;
+import com.example.gonggong.ui.story.BottomNavigationFrag2;
+import com.example.gonggong.ui.calender.BottomNavigationFrag3;
+import com.example.gonggong.ui.profile.BottomNavigationFrag4;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
