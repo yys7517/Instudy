@@ -1,17 +1,28 @@
 package com.example.gonggong.ui.profile;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.gonggong.R;
 
 public class ProfileEdit extends AppCompatActivity {
+
+    ImageView backspace;
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
         //아래에서 위로 올라오면서 켜진다.
         overridePendingTransition(R.anim.vertical_in, R.anim.none);
+        backspace = (ImageView) findViewById(R.id.backspace);
+        backspace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editfin();
+            }
+        });
     }
 
     public void editfin(){
