@@ -60,9 +60,6 @@ public class BottomNavigationFrag3 extends Fragment {
                 mOneDayDecorator
         );
 
-        final String[] result = {"2021,03,18", "2021,04,18", "2021,05,18", "2021,06,18"};
-
-        new ApiSimulator(result).executeOnExecutor(Executors.newSingleThreadExecutor());
 
         mMaterialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -75,12 +72,10 @@ public class BottomNavigationFrag3 extends Fragment {
                 Log.i("Month test", Month + "");
                 Log.i("Day test", Day + "");
 
-                String shot_Day = Year + "," + Month + "," + Day;
-
-                Log.i("shot_Day test", shot_Day + "");
-                mMaterialCalendarView.clearSelection();
             }
         });
+
+        //new ApiSimulator(String []).executeOnExecutor(Executors.newSingleThreadExecutor());
 
         mButtonTest = (Button) rootView.findViewById(R.id.mButtonTest);
 
