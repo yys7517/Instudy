@@ -59,7 +59,6 @@ public class IntroActivity extends FragmentActivity {
 
         });
 
-
         final float pageMargin = getResources().getDimensionPixelOffset(R.dimen.pageMargin);
         final float pageOffset = getResources().getDimensionPixelOffset(R.dimen.offset);
 

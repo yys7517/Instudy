@@ -51,9 +51,9 @@
             android:src="@drawable/test"/>
 
     <ImageButton
+            android:id="@+id/imgbtnCamera"
             android:layout_width="27dp"
             android:layout_height="27dp"
-            android:id="@+id/imgbtnCamera"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintEnd_toEndOf="@id/cardView"

@@ -209,6 +209,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/txt_profile_intoduce"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 
