@@ -38,6 +38,8 @@ dependencies {
     implementation "com.kakao.sdk:v2-navi:2.3.0"                            // 카카오내비
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.google.android.material:material:1.2.1'
+    implementation 'gun0912.ted:tedpermission:2.2.3'                        //권한 요청을 위한 팝업을 쉽게 구성하기 위해
+    implementation 'de.hdodenhof:circleimageview:2.2.0'                     // CircleImageView 원형 이미지 위젯 추가
     implementation 'androidx.viewpager2:viewpager2:1.0.0'                   // 뷰 페이저 2
     implementation 'me.relex:circleindicator:2.1.4'                         // 서클 인디케이터
     implementation "com.prolificinteractive:material-calendarview:1.4.3"    // 달력
