@@ -7,10 +7,16 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import com.example.gonggong.Intro.FragmentAdapter;
+import com.example.gonggong.LoginActivity;
 import com.example.gonggong.R;
 
 import me.relex.circleindicator.CircleIndicator3;
@@ -26,6 +32,7 @@ public class IntroActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
+
 
 
         //ViewPager2

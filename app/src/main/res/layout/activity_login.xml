@@ -41,15 +41,14 @@
             app:srcCompat="@drawable/naver" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/mButtonFacebook"
+            android:id="@+id/mButtonGoogle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:backgroundTint="#5890FF"
-            android:tint="@android:color/white"
+            android:backgroundTint="#FFFFFF"
             app:borderWidth="0dp"
             app:fabCustomSize="63dp"
-            app:srcCompat="@drawable/facebook" />
+            app:srcCompat="@drawable/googlebtn" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/mButtonKakao"

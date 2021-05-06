@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "237873216440",
+    "project_id": "smartvendingmachine-cf6f8",
+    "storage_bucket": "smartvendingmachine-cf6f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237873216440:android:2149d08f1fa15a2021ad4d",
+        "android_client_info": {
+          "package_name": "com.example.smartvendingmachine"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "237873216440-ssf1jdfjbti1e68du44hs3o845d446fl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartvendingmachine",
+            "certificate_hash": "8d640b7b8cb77f8da6d8ccdfda5b12d9acadb2d4"
+          }
+        },
+        {
+          "client_id": "237873216440-15sits5pdpusa0evu3efn5gh2dap04ib.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtnK9zr3H5TMCNkGpVzCk0GtxMM9PgocU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237873216440-15sits5pdpusa0evu3efn5gh2dap04ib.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,9 +1,12 @@
 package com.example.gonggong;
 
+import android.content.Intent;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import com.example.gonggong.ui.home.BottomNavigationFrag1;
 import com.example.gonggong.ui.story.BottomNavigationFrag2;
 import com.example.gonggong.ui.calender.BottomNavigationFrag3;
@@ -24,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.nav_view);
+
+        Intent intent = getIntent();
+        String USER_NICKNAME = intent.getStringExtra("nickname");
+        Toast.makeText(getApplicationContext(), USER_NICKNAME + " 님 어서오세요.", Toast.LENGTH_SHORT).show();
 
         //프래그먼트 생성
         fragment1 = new BottomNavigationFrag1();
