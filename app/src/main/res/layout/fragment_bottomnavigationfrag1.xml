@@ -17,13 +17,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/notosanscjkkrmedium"
-            android:text="HDD"
+            android:text="사랑해요 GongGong♥"
             android:textColor="#000000"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="@id/constraint"
             app:layout_constraintEnd_toEndOf="@id/constraint"
             app:layout_constraintStart_toStartOf="@id/constraint"
-            app:layout_constraintTop_toTopOf="@id/constraint" />
+            app:layout_constraintTop_toTopOf="@id/constraint"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -35,21 +36,23 @@
         android:background="#e3e3e3"
         app:layout_constraintTop_toBottomOf="@+id/constraint" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/constraint">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="하드디스크, 하드, Hard Disk Drive, 흐드드, 후덜덜(?)">
-
-        </TextView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/constraint"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

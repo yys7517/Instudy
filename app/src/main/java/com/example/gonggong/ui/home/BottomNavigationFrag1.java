@@ -13,6 +13,7 @@ public class BottomNavigationFrag1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_bottomnavigationfrag1, container, false);
 
+
         return rootView;
     }
 }
