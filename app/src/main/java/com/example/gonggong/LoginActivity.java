@@ -187,23 +187,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mButtonNaver.setOnClickListener(this);
 
 
-        //facebook
+        //google
         mButtonGoogle = (FloatingActionButton) findViewById(R.id.mButtonGoogle);
         mButtonGoogle.setOnClickListener(this);
 
 
-//        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken(getString(R.string.default_web_client_id))
-//                .requestEmail()
-//                .build();
-//
-//        //프레그먼트 사용하면 this 부분 getcontext 사용하면 됨
-//        googleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this, LoginActivity.this)
-//                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-//                .build();
-//
-//        auth = FirebaseAuth.getInstance(); // 파이어베이스 인증 객체 초기화
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        //프레그먼트 사용하면 this 부분 getcontext 사용하면 됨
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, LoginActivity.this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .build();
+
+        auth = FirebaseAuth.getInstance(); // 파이어베이스 인증 객체 초기화
     }
 
     // 설정값을 저장하는 함수
@@ -282,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.d("네아로_이메일", jsonObject.getString("email"));
                     Log.d("네아로_이름", jsonObject.getString("name"));
                     Log.d("네아로_닉네임", jsonObject.getString("nickname"));
-                    Log.d("네아로_프로필사진", jsonObject.getString("profile_image"));
+                    //Log.d("네아로_프로필사진", jsonObject.getString("profile_image"));
 
                     StrUSER_ID = jsonObject.getString("id");
                     StrUSER_NICKNAME = jsonObject.getString("nickname");
