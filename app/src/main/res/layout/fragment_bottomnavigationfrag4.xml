@@ -132,7 +132,6 @@
                     app:layout_constraintBottom_toTopOf="@+id/profile_bar"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:padding="10dp"
-                    android:layout_marginRight="10dp"
             />
 
             <!-- 소개 -->

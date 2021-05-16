@@ -67,7 +67,9 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="인스타처럼 다른 사람 글 보임">
+            android:text="인스타처럼 다른 사람 글 보임"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
 
         </TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
