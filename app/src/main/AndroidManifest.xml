@@ -34,6 +34,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".ui.profile.ProfileEdit" />
 
+
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

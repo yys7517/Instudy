@@ -49,7 +49,8 @@ public class ProfileEdit extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isPermission) goToAlbum();
-                else Toast.makeText(view.getContext(), getResources().getString(R.string.permission_2), Toast.LENGTH_LONG).show();
+                else Toast.makeText(view.getContext(), getResources()
+                        .getString(R.string.permission_2), Toast.LENGTH_LONG).show();
             }
         });
         //아래에서 위로 올라오면서 켜진다.
