@@ -30,48 +30,12 @@
         android:text="유저 닉네임"
         android:textColor="#212529"
         android:textSize="10sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtTitle"
+        app:layout_constraintBottom_toTopOf="@+id/txtContents"
         app:layout_constraintStart_toEndOf="@+id/imgProfile"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- code숨김 -->
     <TextView
-        android:id="@+id/code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:fontFamily="@font/notosanscjkkrmedium"
-        android:lineSpacingExtra="6sp"
-        android:text="코드숨김 ㅎㅎ"
-        android:visibility="gone"
-        android:textColor="#212529"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtTitle"
-        app:layout_constraintStart_toEndOf="@+id/txtNick"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- contents숨김 -->
-    <TextView
-        android:id="@+id/contents"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:fontFamily="@font/notosanscjkkrmedium"
-        android:lineSpacingExtra="6sp"
-        android:text="컨텐츠 내용 숨김 ㅎㅎ"
-        android:visibility="gone"
-        android:textColor="#212529"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtTitle"
-        app:layout_constraintStart_toEndOf="@+id/txtNick"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/txtContents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -96,7 +60,7 @@
         android:textColor="#767676"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/txtContents" />
 
     <View
         android:id="@+id/view"
