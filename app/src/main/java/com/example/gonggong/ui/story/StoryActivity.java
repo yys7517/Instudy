@@ -36,13 +36,14 @@ public class StoryActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.storyBackImg:
+            case R.id.storyBackImg: //뒤로가기 버튼
                 finish();
                 break;
 
-            case R.id.comment:
+            case R.id.comment: //댓글이미지 버튼
                 Intent intent = new Intent(getApplicationContext(),ReviewActivity.class);
                 startActivityForResult(intent,100);//액티비티 띄우기
+                break;
         }
     }
 }

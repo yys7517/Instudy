@@ -12,6 +12,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,6 +34,9 @@ public class ProfileEdit extends AppCompatActivity {
 
     ImageView backspace;
     ImageButton imgbtncamera;
+    EditText nickname, profilecontents;
+    Button validation;
+
     private Boolean isPermission = true;
     private File tempFile;
     private static final String TAG = "사진 URI 확인";
@@ -60,6 +65,19 @@ public class ProfileEdit extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 editfin();
+            }
+        });
+
+        //EditText
+        nickname = (EditText)findViewById(R.id.nicknameViewedit);
+        profilecontents = (EditText)findViewById(R.id.edtSetProfileContents);
+
+        //확인버튼
+        validation = (Button)findViewById(R.id.mButtonStart);
+        validation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
         });
     }
@@ -244,4 +262,20 @@ public class ProfileEdit extends AppCompatActivity {
 
     }
 
+    private void editTexts() {
+        String editprofile;
+        String editcontents;
+
+        editprofile = nickname.getText().toString(); //닉네임
+        editcontents = profilecontents.getText().toString(); //소개
+
+        if(editprofile.length()<2){
+            //0자 or 1자일때
+            Toast myToast = Toast.makeText(this.getApplicationContext(), "2글자 이상 입력해주세요.", Toast.LENGTH_SHORT);
+            myToast.show();
+        } else{
+            //2글자 이상일때
+            //DB에 값을 넣어줌
+        }
+    }
 }
