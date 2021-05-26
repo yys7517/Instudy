@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
 import com.example.gonggong.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class BottomNavigationFrag2 extends Fragment {
 
@@ -36,7 +39,9 @@ public class BottomNavigationFrag2 extends Fragment {
 
     private Button btChoose;
     private Button btUpload;
-    private ImageView ivPreview;
+
+    private Button getImg;
+    private ImageView ivPreview, getfirebaseimg;
 
     private Uri filePath;
     @Override
@@ -46,6 +51,9 @@ public class BottomNavigationFrag2 extends Fragment {
         btChoose = (Button) rootView.findViewById(R.id.bt_choose);
         btUpload = (Button) rootView.findViewById(R.id.bt_upload);
         ivPreview = (ImageView) rootView.findViewById(R.id.iv_preview);
+
+        getImg = (Button) rootView.findViewById(R.id.bt_getimg);
+        getfirebaseimg = (ImageView) rootView.findViewById(R.id.getfirebaseimg);
 
         //버튼 클릭 이벤트
         btChoose.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +72,13 @@ public class BottomNavigationFrag2 extends Fragment {
             public void onClick(View view) {
                 //업로드
                 uploadFile();
+            }
+        });
+
+        getImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getImg();
             }
         });
         return rootView;
@@ -137,4 +152,24 @@ public class BottomNavigationFrag2 extends Fragment {
         }
     }
 
+
+    private void getImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
+        StorageReference storageRef = storage.getReference();
+        storageRef.child("images/20210523_4740.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지 로드 성공시
+
+                Glide.with(getActivity()).load(uri).into(getfirebaseimg);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //이미지 로드 실패시
+                Toast.makeText(getActivity(), "실패", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
