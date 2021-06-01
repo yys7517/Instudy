@@ -7,6 +7,15 @@ public class ReviewData {
     private String nickname;
     private String date;
     private String contents;
+    private String imagesource; // 이미지 경로
+
+    public String getImagesource() {
+        return imagesource;
+    }
+
+    public void setImagesource(String imagesource) {
+        this.imagesource = imagesource;
+    }
 
     public String getNickname() {
         return nickname;

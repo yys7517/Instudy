@@ -1,24 +1,37 @@
 package com.example.gonggong.ui.story;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.gonggong.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder>{
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
 
     final private String TAG1 = "테스트중이에요옹";
+
+    private Uri Image;
 
     private ArrayList<ReviewData> reviewdata;
     //리스터 객체 참조를 저장하는 변수
@@ -33,15 +46,42 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_review_item,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
 
+
         return viewHolder;
     }
+
 
     //position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
+
+        getImg();
+        Glide.with(holder.itemView.getContext()).load(Image).into(holder.profile);
+
         holder.nickname.setText(reviewdata.get(position).getNickname());
         holder.contents.setText(reviewdata.get(position).getContents());
         holder.date.setText(reviewdata.get(position).getDate());
+
+    }
+
+    private void getImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
+        StorageReference storageRef = storage.getReference();
+        storageRef.child("images/20210523_4740.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지 로드 성공시
+                Image = uri;
+//
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //이미지 로드 실패시
+//                Toast.makeText(context, "실패", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //전체 데이터 갯수 리턴
@@ -65,6 +105,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
+        public CircleImageView profile; // 프사
         public TextView nickname;
         public TextView contents;
         public TextView date;
@@ -72,6 +113,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
 
+            profile = itemView.findViewById(R.id.imgProfile);
             nickname = itemView.findViewById(R.id.txtNick);
             contents = itemView.findViewById(R.id.txtContents);
             date = itemView.findViewById(R.id.txtDate);

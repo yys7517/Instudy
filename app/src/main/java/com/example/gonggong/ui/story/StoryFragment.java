@@ -31,14 +31,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
-public class BottomNavigationFrag2 extends Fragment {
+public class StoryFragment extends Fragment {
 
     private static final String TAG = "MainActivity";
 
     private Button btChoose;
     private Button btUpload;
+    private Button goreview;
 
     private Button getImg;
     private ImageView ivPreview, getfirebaseimg;
@@ -46,8 +46,8 @@ public class BottomNavigationFrag2 extends Fragment {
     private Uri filePath;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_bottomnavigationfrag2, container, false);
-
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_story, container, false);
+        goreview = rootView.findViewById(R.id.goreview);
         btChoose = (Button) rootView.findViewById(R.id.bt_choose);
         btUpload = (Button) rootView.findViewById(R.id.bt_upload);
         ivPreview = (ImageView) rootView.findViewById(R.id.iv_preview);
@@ -56,6 +56,14 @@ public class BottomNavigationFrag2 extends Fragment {
         getfirebaseimg = (ImageView) rootView.findViewById(R.id.getfirebaseimg);
 
         //버튼 클릭 이벤트
+
+        goreview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ReviewActivity.class);
+                startActivity(intent);
+            }
+        });
         btChoose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,7 +160,6 @@ public class BottomNavigationFrag2 extends Fragment {
         }
     }
 
-
     private void getImg() {
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
         StorageReference storageRef = storage.getReference();
@@ -160,10 +167,9 @@ public class BottomNavigationFrag2 extends Fragment {
             @Override
             public void onSuccess(Uri uri) {
                 //이미지 로드 성공시
-
                 Glide.with(getActivity()).load(uri).into(getfirebaseimg);
-
             }
+
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {

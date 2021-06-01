@@ -7,19 +7,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.gonggong.ui.home.BottomNavigationFrag1;
-import com.example.gonggong.ui.story.BottomNavigationFrag2;
-import com.example.gonggong.ui.calender.BottomNavigationFrag3;
-import com.example.gonggong.ui.profile.BottomNavigationFrag4;
+import com.example.gonggong.ui.home.HomeFragment;
+import com.example.gonggong.ui.story.StoryFragment;
+import com.example.gonggong.ui.calender.CalenderFragment;
+import com.example.gonggong.ui.profile.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    BottomNavigationFrag1 fragment1;
-    BottomNavigationFrag2 fragment2;
-    BottomNavigationFrag3 fragment3;
-    BottomNavigationFrag4 fragment4;
+    HomeFragment fragment1;
+    StoryFragment fragment2;
+    CalenderFragment fragment3;
+    ProfileFragment fragment4;
 
 
     @Override
@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), USER_NICKNAME + " 님 어서오세요.", Toast.LENGTH_SHORT).show();
 
         //프래그먼트 생성
-        fragment1 = new BottomNavigationFrag1();
-        fragment2 = new BottomNavigationFrag2();
-        fragment3 = new BottomNavigationFrag3();
-        fragment4 = new BottomNavigationFrag4();
+        fragment1 = new HomeFragment();
+        fragment2 = new StoryFragment();
+        fragment3 = new CalenderFragment();
+        fragment4 = new ProfileFragment();
 
         //처음에 띄울화면 이걸로 기릿~
         getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, fragment1).commitAllowingStateLoss();

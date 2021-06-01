@@ -71,13 +71,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txtTitle"
+        android:id="@+id/txtContents"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/notosanscjkkrregular"
-        android:text="게시글 제목"
+        android:text="게시글 내용"
         android:textColor="#212529"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -88,6 +88,7 @@
         app:layout_constraintTop_toBottomOf="@+id/imgProfile" />
 
     <ImageView
+        android:id="@+id/imgPost"
         android:layout_width="160dp"
         android:layout_height="90dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,7 +108,7 @@
         android:textColor="#767676"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/txtContents" />
 
     <View
         android:id="@+id/view"
