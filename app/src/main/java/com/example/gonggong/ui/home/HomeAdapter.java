@@ -121,16 +121,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             }
         });
 
-
         holder.nickname.setText( iData.get(position).getNickname() );   //닉네임
         holder.contents.setText(iData.get(position).getContents());     //내용
         holder.date.setText(iData.get(position).getDate());             //날짜
 
     }
-    private void getImg(String imgPath) {
-
-    }
-
 
     //전체 데이터 갯수 리턴
     @Override
