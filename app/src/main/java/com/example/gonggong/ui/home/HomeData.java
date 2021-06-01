@@ -13,12 +13,11 @@ public class HomeData {
     private String imgPost; // 게시글 사진 경로
     private String imgProfile; // 프로필 사진 경로
 
-    private Uri Post,Profile; // 게시글 사진, 프로필 사진
-
     //게시물 작성자 ID
     public String getUserid() {
         return userid;
     }
+
     public void setUserid(String userid) {
         this.userid = userid;
     }
@@ -27,6 +26,7 @@ public class HomeData {
     public String getCode() {
         return code;
     }
+
     public void setCode(String code) {
         this.code = code;
     }
@@ -35,6 +35,7 @@ public class HomeData {
     public String getNickname() {
         return nickname;
     }
+
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
@@ -43,6 +44,7 @@ public class HomeData {
     public String getContents() {
         return contents;
     }
+
     public void setContents(String contents) {
         this.contents = contents;
     }
@@ -51,6 +53,7 @@ public class HomeData {
     public String getDate() {
         return date;
     }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -63,23 +66,9 @@ public class HomeData {
     public void setImgPost(String imgPost) {
         this.imgPost = imgPost;
     }
-
-    public void setPost(Uri post) {
-        Post = post;
-    }
-
-    public Uri getPost() {
-        return Post;
-    }
-
-    public void setProfile(Uri profile) {
-        Profile = profile;
-    }
-
-    public Uri getProfile() {
-        return Profile;
-    }
 }
+
+
 
 
 
