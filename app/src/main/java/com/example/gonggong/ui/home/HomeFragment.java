@@ -48,6 +48,7 @@ public class HomeFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
 
 
+    private Uri Post, Profile;
     private static String IP_ADDRESS = "211.211.158.42";
     private static String TAG = "phptest";
 
@@ -239,20 +240,37 @@ public class HomeFragment extends Fragment {
                 String POST_DATE = item.getString(TAG_DATE);
                 String POST_IMGPATH = item.getString(TAG_IMGPATH);
 
+
                 HomeData boardData = new HomeData();
 
                 boardData.setCode(POST_CODE); // 게시글 코드
                 boardData.setImgPost(POST_IMGPATH); // 게시글 사진 경로
 
-//                PostImg task = new PostImg();
-//                task.execute("http://" + IP_ADDRESS + "/instudy/PostImg.php", "", POST_CODE);
+                FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
+                StorageReference storageRef = storage.getReference();
+                storageRef.child(POST_IMGPATH).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        //이미지 로드 성공시
+                        Post = uri;
+                        boardData.setPost(Post);
+                        Log.d(TAG, "uri:" + String.valueOf(Post));
+                        Post = null;
+                    }
+
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        //이미지 로드 실패시
+                    }
+                });
 
                 boardData.setNickname(POST_NICKNAME); // 게시글 작성자
                 boardData.setDate(POST_DATE); // 게시글 작성 날짜
                 boardData.setContents(POST_CONTENTS); // 게시글 내용
 
                 boardData.setUserid(POST_WID);   // 게시글 작성자 ID
-//                getProfileImg(POST_WID);        // 유저 아이디로 프사 가져오기
+
 
                 mSearchData.add(boardData);
                 adapter.notifyDataSetChanged();

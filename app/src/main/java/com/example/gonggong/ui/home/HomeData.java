@@ -13,7 +13,7 @@ public class HomeData {
     private String imgPost; // 게시글 사진 경로
     private String imgProfile; // 프로필 사진 경로
 
-
+    private Uri Post,Profile; // 게시글 사진, 프로필 사진
 
     //게시물 작성자 ID
     public String getUserid() {
@@ -62,6 +62,22 @@ public class HomeData {
 
     public void setImgPost(String imgPost) {
         this.imgPost = imgPost;
+    }
+
+    public void setPost(Uri post) {
+        Post = post;
+    }
+
+    public Uri getPost() {
+        return Post;
+    }
+
+    public void setProfile(Uri profile) {
+        Profile = profile;
+    }
+
+    public Uri getProfile() {
+        return Profile;
     }
 }
 

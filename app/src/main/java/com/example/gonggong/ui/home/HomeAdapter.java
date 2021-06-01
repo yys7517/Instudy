@@ -1,7 +1,9 @@
 package com.example.gonggong.ui.home;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +29,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     final private String TAG1 = "테스트중이에요옹";
 
-    private Uri Post,Profile;
+    private Uri Post = null;
 
 
 
@@ -96,7 +98,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         Context context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_home_item, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
-
         return viewHolder;
     }
 
@@ -104,22 +105,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        getImg( iData.get(position).getImgPost()) ;
-        Glide.with(holder.itemView.getContext()).load(Post).into(holder.imgPost);
-
-        holder.nickname.setText(iData.get(position).getNickname());
-        holder.contents.setText(iData.get(position).getContents());
-        holder.date.setText(iData.get(position).getDate());
-
-    }
-    private void getImg(String imgPath) {
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
         StorageReference storageRef = storage.getReference();
-        storageRef.child(imgPath).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storageRef.child( iData.get(position).getImgPost() ).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 //이미지 로드 성공시
-                Post = uri;
+                Glide.with(holder.itemView.getContext()).load( uri ).into( holder.imgPost );   //게시글 사진
             }
 
         }).addOnFailureListener(new OnFailureListener() {
@@ -128,10 +120,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 //이미지 로드 실패시
             }
         });
+
+
+        holder.nickname.setText( iData.get(position).getNickname() );   //닉네임
+        holder.contents.setText(iData.get(position).getContents());     //내용
+        holder.date.setText(iData.get(position).getDate());             //날짜
+
     }
+    private void getImg(String imgPath) {
 
-
-
+    }
 
 
     //전체 데이터 갯수 리턴
