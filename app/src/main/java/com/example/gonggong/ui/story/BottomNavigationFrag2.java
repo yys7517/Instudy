@@ -39,7 +39,6 @@ public class BottomNavigationFrag2 extends Fragment {
 
     private Button btChoose;
     private Button btUpload;
-
     private Button getImg;
     private ImageView ivPreview, getfirebaseimg;
 

@@ -86,7 +86,7 @@
             android:background="@drawable/background_for_btn_in_comment_gray"
             android:fontFamily="@font/notosanscjkkrregular"
             android:gravity="center_vertical"
-            android:hint="댓글 쓰는곳이다 이뇨속들아"
+            android:hint="댓글"
             android:inputType="textPersonName"
             android:paddingLeft="20dp"
             android:textSize="15dp"
