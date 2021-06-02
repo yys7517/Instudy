@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.gonggong"
-        minSdkVersion 28
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -27,7 +27,12 @@ android {
     }
 }
 
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
 dependencies {
+    implementation 'com.google.gms:google-services:4.0.1'
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -36,7 +41,7 @@ dependencies {
     implementation "com.kakao.sdk:v2-story:2.3.0"                           // 카카오스토리
     implementation "com.kakao.sdk:v2-link:2.3.0"                            // 메시지(카카오링크)
     implementation "com.kakao.sdk:v2-navi:2.3.0"                            // 카카오내비
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'                 // 이미지 글라이드
     implementation 'com.google.android.material:material:1.2.1'
 
     implementation 'de.hdodenhof:circleimageview:2.2.0'                     // CircleImageView 원형 이미지 위젯 추가
@@ -48,8 +53,41 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    implementation 'com.google.firebase:firebase-analytics'// 구글 로그인
+    implementation platform('com.google.firebase:firebase-bom:26.8.0') //구글 로그인
+    implementation 'com.google.firebase:firebase-analytics:17.2.1' //파이어베이스 앱 분석
+    implementation 'com.google.firebase:firebase-core:17.2.1' //파이어베이스 코어
+    implementation 'com.google.firebase:firebase-auth:19.1.0' //파이어베이스 인증
+    implementation 'com.google.firebase:firebase-storage'//파이어베이스 이미지 스토리지 저장
+    implementation 'com.firebaseui:firebase-ui-auth:4.2.1' //파이어베이스 인증2
+    implementation 'com.github.bumptech.glide:glide:4.9.0' //글라이드 이미지 로딩
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0' //글라이드 이미지 로딩2
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+
+    //네이버 로그인
+    implementation files('libs\\naveridlogin_android_sdk_4.2.5.aar')
+    implementation files('libs\\json-simple-1.1.1.jar')
+
+    // naveridlogin dependencies
+    def android_x_version = "1.0.0"
+    implementation "androidx.appcompat:appcompat:$android_x_version"
+    implementation "androidx.legacy:legacy-support-core-utils:$android_x_version"
+    implementation "androidx.browser:browser:$android_x_version"
+    implementation "androidx.legacy:legacy-support-v4:$android_x_version" //네이버 로그인
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.navigation:navigation-fragment:2.1.0'
+    implementation 'androidx.navigation:navigation-ui:2.1.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
     //retrofit2
     def retrofit_version = "2.6.2"
     implementation "com.squareup.retrofit2:retrofit:2.6.2"
 
+    //tedpermission
+    implementation 'gun0912.ted:tedpermission:2.0.0'
 }

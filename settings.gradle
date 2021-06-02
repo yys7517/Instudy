@@ -1,2 +1,4 @@
+include ':naveridlogin_android_sdk_4.2.5'
+include ':json-simple-1.1.1'
 include ':app'
 rootProject.name = "GongGong"

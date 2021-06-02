@@ -1,6 +1,5 @@
 package com.example.gonggong.ui.calender;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -29,9 +27,8 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.Executors;
 
-public class BottomNavigationFrag3 extends Fragment {
+public class CalenderFragment extends Fragment {
 
     private MaterialCalendarView mMaterialCalendarView;
     private Button mButtonTest;
@@ -43,7 +40,7 @@ public class BottomNavigationFrag3 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_bottomnavigationfrag3, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_calender, container, false);
 
         mMaterialCalendarView = (MaterialCalendarView) rootView.findViewById(R.id.mMaterialCalendarView);
 
