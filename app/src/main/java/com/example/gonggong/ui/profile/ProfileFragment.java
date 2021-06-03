@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class ProfileFragment extends Fragment {
@@ -46,7 +48,7 @@ public class ProfileFragment extends Fragment {
     private String mJsonString; // JSON 파싱 값을 받아서 임시로 담는 공간.
 
     //View
-    de.hdodenhof.circleimageview.CircleImageView userimg;
+    private CircleImageView userimg;
     String profileurl;
     TextView usernick, userintroduce, following, follower;
     @Override
@@ -61,6 +63,7 @@ public class ProfileFragment extends Fragment {
         userintroduce = (TextView) rootView.findViewById(R.id.txt_profile_intoduce); //소개
         following = (TextView) rootView.findViewById(R.id.txt_profile_following_number);
         follower = (TextView) rootView.findViewById(R.id.txt_profile_follower_number);
+
 
         edit_profile = (ImageView) rootView.findViewById(R.id.account_cog);
         edit_profile.setOnClickListener(new View.OnClickListener() {
