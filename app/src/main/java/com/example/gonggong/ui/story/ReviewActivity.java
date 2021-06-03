@@ -1,10 +1,12 @@
 package com.example.gonggong.ui.story;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,12 +34,15 @@ public class ReviewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReviewAdapter adapter;
     private RecyclerView.LayoutManager  mLayoutManager;
+    private ImageView backspace;
+
+    private String spostcode;
 
     private ArrayList<ReviewData> mSearchData = new ArrayList<>();
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    private static String IP_ADDRESS = "211.211.158.42/yongrun/svm";
+    private static String IP_ADDRESS = "211.211.158.42";
     private static String TAG = "phptest";
     private String mJsonString;
 
@@ -45,6 +50,19 @@ public class ReviewActivity extends AppCompatActivity {
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+
+        Intent intent = getIntent();
+
+        spostcode = intent.getStringExtra("post_code");
+
+        backspace = findViewById(R.id.backspace);
+
+        backspace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         recyclerView = (RecyclerView) findViewById(R.id.rvComment);
         recyclerView.setHasFixedSize(true);
@@ -59,7 +77,7 @@ public class ReviewActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                PostUpdate();
+                CommentUpdate();
                 swipeRefreshLayout.setRefreshing(false); //새로고침표시 없애기
             }
         });
@@ -70,22 +88,20 @@ public class ReviewActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        PostUpdate();
+        CommentUpdate();
     }
 
-    public void PostUpdate() {
+    public void CommentUpdate() {
         mSearchData.clear();
         adapter.notifyDataSetChanged();
         GetData task = new GetData();
-        task.execute("http://" + IP_ADDRESS + "/POST.php", "");
+        task.execute("http://" + IP_ADDRESS + "/instudy/PostComment.php", "");
     }
 
     private class GetData extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
         String errorString = null;
-
-
 
 
         @Override
@@ -101,14 +117,14 @@ public class ReviewActivity extends AppCompatActivity {
             } else {
 
                 mJsonString = result;
-                showResult();
+                showComment();
             }
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(getApplicationContext(), "Please Wait", null, true, true);
+            progressDialog = ProgressDialog.show(ReviewActivity.this, "Please Wait", null, true, true);
         }
 
         @Override
@@ -173,13 +189,14 @@ public class ReviewActivity extends AppCompatActivity {
 
         }
     }
-    private void showResult() {
+    private void showComment() {
 
-        String TAG_JSON = "POST_DATA";
-        String TAG_ANSWER_CONTENTS = "POST_ANSWER_CONTENTS";
-        String TAG_ANSWER_DATE = "POST_ANSWER_DATE";
-        String TAG_POST_ID = "POST_ID";
-
+        String TAG_JSON = "PostComment Table";
+        String TAG_POST_CODE = "PostCode";
+        String TAG_COMMENT_WID = "PostCommentWID";
+        String TAG_COMMENT_NICK = "PostCommentNickName";
+        String TAG_COMMENT_CONTENTS = "PostComment";
+        String TAG_COMMENT_DATE = "PostCommentDate";
 
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
@@ -189,18 +206,27 @@ public class ReviewActivity extends AppCompatActivity {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
-                String POST_NICKNAME = item.getString(TAG_POST_ID);
-                String POST_DATE = item.getString(TAG_ANSWER_CONTENTS);
-                String POST_CONTENTS = item.getString(TAG_ANSWER_DATE);
+                String POST_CODE = item.getString(TAG_POST_CODE);
 
-                ReviewData reviewData = new ReviewData();
+                if(POST_CODE.equals(spostcode)) {       // 게시글 코드가 일치하는 댓글들만 출력한다.
 
-                reviewData.setNickname(POST_NICKNAME); // 게시글 작성자
-                reviewData.setDate(POST_DATE); // 게시글 작성 날짜
-                reviewData.setContents(POST_CONTENTS); // 게시글 내용
+                    String COMMENT_WID = item.getString(TAG_COMMENT_WID);       // 댓글 작성자 ID << 이거로 프로필 사진 가져와야함.
 
-                mSearchData.add(reviewData);
-                adapter.notifyDataSetChanged();
+                    String COMMENT_NICK = item.getString(TAG_COMMENT_NICK);
+                    String COMMENT_CONTENTS = item.getString(TAG_COMMENT_CONTENTS);
+                    String COMMENT_DATE = item.getString(TAG_COMMENT_DATE);
+
+                    ReviewData reviewData = new ReviewData();
+
+                    reviewData.setNickname(COMMENT_NICK); // 댓글 작성자 닉네임
+                    reviewData.setDate(COMMENT_DATE); // 게시글 작성 날짜
+                    reviewData.setContents(COMMENT_CONTENTS); // 게시글 내용
+
+                    mSearchData.add(reviewData);
+                    adapter.notifyDataSetChanged();
+                }
+                else {}
+
             }
 
         } catch (JSONException e) {

@@ -1,20 +1,61 @@
 package com.example.gonggong.ui.story;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
 import com.example.gonggong.R;
+import com.example.gonggong.ui.home.HomeAdapter;
+import com.example.gonggong.ui.home.HomeData;
+import com.example.gonggong.ui.home.HomeFragment;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-public class StoryActivity extends AppCompatActivity implements View.OnClickListener {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    ImageView storybackimg, comment;
-    TextView commentcount, detailtitle, detailnick, detaildata, maintext;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+public class StoryActivity extends AppCompatActivity{
+
+    private String suserid;     //게시글 작성 사용자 ID
+    private String spostcode;   //게시글 코드
+
+    private static String TAG = "게시글 보기";
+
+    private String mJsonString;
+
+    //SharedPreferences
+    private SharedPreferences appData;
+
+    private int CommentCount = 0;
+
+    private static String IP_ADDRESS = "211.211.158.42";
+
+    ImageView storybackimg, comment, imgPost;
+    TextView commentcount, detailtitle, detailnick, detaildate, maintext;
 
 
     @Override
@@ -23,27 +64,360 @@ public class StoryActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_story);
 
         storybackimg = (ImageView) findViewById(R.id.storyBackImg); //뒤로가기
+
+        storybackimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
         comment = (ImageView) findViewById(R.id.imgCommentIcon); //댓글화면으로 인텐트
         commentcount = (TextView) findViewById(R.id.txtCommentCount); //댓글화면으로 인텐트2
-        detailtitle = (TextView) findViewById(R.id.txtDetailTitle); //제목
+
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StoryActivity.this,ReviewActivity.class);
+                intent.putExtra("post_code",spostcode);
+                startActivity(intent);
+            }
+        });
+        commentcount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StoryActivity.this,ReviewActivity.class);
+                intent.putExtra("post_code",spostcode);
+                startActivity(intent);
+            }
+        });
+
         detailnick = (TextView) findViewById(R.id.txtDetailNick); //닉네임
-        detaildata = (TextView) findViewById(R.id.txtDetailDate); //작성 날짜
+        detaildate = (TextView) findViewById(R.id.txtDetailDate); //작성 날짜
         maintext = (TextView) findViewById(R.id.txtMain); //글 내용
 
+        imgPost = (ImageView) findViewById(R.id.imgPost);  // 글 사진
+
+        Intent intent = getIntent();
+
+        suserid = intent.getStringExtra("userid");
+        spostcode = intent.getStringExtra("post_code");
+
+        CommentCount =0;
+
+        PostUpdate();
+        CommentUpdate();
     }
+    // 값 가져오는 클래스
+    private class GetData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(StoryActivity.this, "Please Wait", null, true, true);
+        }
 
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.storyBackImg: //뒤로가기 버튼
-                finish();
-                break;
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
 
-            case R.id.comment: //댓글이미지 버튼
-                Intent intent = new Intent(getApplicationContext(),ReviewActivity.class);
-                startActivityForResult(intent,100);//액티비티 띄우기
-                break;
+            progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null) {
+
+            } else {
+
+                mJsonString = result;
+                showBoard();   //  showBoard 메소드 실행
+            }
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
         }
     }
+
+    private void showBoard() {
+
+        String TAG_JSON = "Post Table";
+        String TAG_CODE = "PostCode";
+        String TAG_POST_WID = "PostWID";
+        String TAG_NICKNAME = "PostNickName";
+        String TAG_DATE = "PostDate";
+        String TAG_CONTENTS = "PostContent";
+        String TAG_IMGPATH = "PostImgPath";
+
+
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for (int i = jsonArray.length()-1; i>=0; i--) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String POST_CODE = item.getString(TAG_CODE);
+
+                if( POST_CODE.equals(spostcode) ) {
+                    String POST_WID = item.getString(TAG_POST_WID);
+                    String POST_NICKNAME = item.getString(TAG_NICKNAME);
+                    String POST_CONTENTS = item.getString(TAG_CONTENTS);
+                    String POST_DATE = item.getString(TAG_DATE);
+                    String POST_IMGPATH = item.getString(TAG_IMGPATH);
+
+                    detailnick.setText(POST_NICKNAME);
+                    detaildate.setText(POST_DATE);
+                    maintext.setText(POST_CONTENTS);
+
+                    spostcode = POST_CODE;
+                    suserid = POST_WID;
+
+                    FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
+                    StorageReference storageRef = storage.getReference();
+                    storageRef.child( POST_IMGPATH ).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            //이미지 로드 성공시
+                            Glide.with(getApplicationContext()).load( uri ).into( imgPost );   //게시글 사진
+                        }
+
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            //이미지 로드 실패시
+                        }
+                    });
+
+                }
+
+
+
+            }
+
+        } catch (JSONException e) {
+
+            Log.d(TAG, "showResult : ", e);
+        }
+
+    }
+    public void PostUpdate() {      //게시글 새로고침 메소드
+        GetData task = new GetData();
+        task.execute("http://" + IP_ADDRESS + "/instudy/GetImgExample.php", "");
+    }
+
+    public void CommentUpdate() {      //댓글 개수 가져오는 메소드
+        GetCommentCount task = new GetCommentCount();
+        task.execute("http://" + IP_ADDRESS + "/instudy/PostComment.php", "");
+    }
+
+
+    private class GetCommentCount extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null) {
+
+            } else {
+
+                mJsonString = result;
+                showComment();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(StoryActivity .this, "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+    private void showComment() {
+
+        String TAG_JSON = "PostComment Table";
+        String TAG_POST_CODE = "PostCode";
+        String TAG_COMMENT_WID = "PostCommentWID";
+        String TAG_COMMENT_NICK = "PostCommentNickName";
+        String TAG_COMMENT_CONTENTS = "PostComment";
+        String TAG_COMMENT_DATE = "PostCommentDate";
+
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for (int i = jsonArray.length()-1; i>=0; i--) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String POST_CODE = item.getString(TAG_POST_CODE);
+
+                if( POST_CODE.equals(spostcode) ) {       // 게시글 코드가 일치하는 댓글들만 출력한다.
+
+                    CommentCount++;
+
+                    String COMMENT_WID = item.getString(TAG_COMMENT_WID);       // 댓글 작성자 ID << 이거로 프로필 사진 가져와야함.
+
+                    String COMMENT_NICK = item.getString(TAG_COMMENT_NICK);
+                    String COMMENT_CONTENTS = item.getString(TAG_COMMENT_CONTENTS);
+                    String COMMENT_DATE = item.getString(TAG_COMMENT_DATE);
+
+                    ReviewData reviewData = new ReviewData();
+
+                    reviewData.setNickname(COMMENT_NICK); // 댓글 작성자 닉네임
+                    reviewData.setDate(COMMENT_DATE); // 게시글 작성 날짜
+                    reviewData.setContents(COMMENT_CONTENTS); // 게시글 내용
+
+
+                }
+                else {}
+
+            }
+            commentcount.setText(String.valueOf(CommentCount));
+
+        } catch (JSONException e) {
+
+            Log.d(TAG, "showResult : ", e);
+        }
+
+    }
+
+
+
+
 }

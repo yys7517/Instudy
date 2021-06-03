@@ -36,6 +36,7 @@
         <activity android:name=".ui.story.ReviewActivity"/>
         <activity android:name=".ui.story.StoryActivity"/>
 
+
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
