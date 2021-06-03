@@ -58,11 +58,12 @@ public class ProfileEdit extends AppCompatActivity {
     private static String TAG1 = "프로필수정 게시물";
 
     ImageView backspace;
-    ImageButton imgbtncamera;
+    ImageButton imgbtncamera, imgsave;
     TextView mTextViewPostResult;
     EditText mEditNickname, mEditProfileContents;
     private CircleImageView profileimgview; // 유저 원형 이미지
     Button validation;
+
     private Uri filePath;
 
     private Boolean isPermission = true;
@@ -82,6 +83,15 @@ public class ProfileEdit extends AppCompatActivity {
         mTextViewPostResult = findViewById(R.id.mTextViewPostResult); //실패 성공 알려줌 하지만 안씀뷰
 
         profileimgview = (CircleImageView) findViewById(R.id.cardView);
+
+        //이미지 save
+        imgsave = (ImageButton) findViewById(R.id.imgbtnSave);
+        imgsave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                uploadFile();
+            }
+        });
 
         Intent mIntent = getIntent(); //인텐트 frag4에서 해줘야함
         String Default_nickname = mIntent.getStringExtra("nickname");
@@ -139,7 +149,6 @@ public class ProfileEdit extends AppCompatActivity {
                     task.execute("http://" + IP_ADDRESS + "/UserModifyAndroid.php", USER_TESTID, USER_NICKNAME, USER_CONTENTS, USER_PROFILEURL);
                     Toast.makeText(getApplicationContext(), "프로필이 수정되었습니다.", Toast.LENGTH_SHORT).show();
                     save(USER_NICKNAME);
-                    uploadFile();
                     finish();
                 }
             }
@@ -184,7 +193,7 @@ public class ProfileEdit extends AppCompatActivity {
         //업로드할 파일이 있으면 수행
         if (filePath != null) {
             //업로드 진행 Dialog 보이기
-            final ProgressDialog progressDialog = new ProgressDialog(ProfileEdit.this);
+            final ProgressDialog progressDialog = new ProgressDialog(this);
             progressDialog.setTitle("업로드중...");
             progressDialog.show();
 
@@ -204,9 +213,29 @@ public class ProfileEdit extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss(); //업로드 진행 Dialog 상자 닫기
-                            Toast.makeText(ProfileEdit.this, "업로드 완료!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    //실패시
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "업로드 실패!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    //진행중
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            @SuppressWarnings("VisibleForTests") //이걸 넣어 줘야 아랫줄에 에러가 사라진다. 넌 누구냐?
+                            double progress = (100 * taskSnapshot.getBytesTransferred()) /  taskSnapshot.getTotalByteCount();
+                            //dialog에 진행률을 퍼센트로 출력해 준다
+                            progressDialog.setMessage("Uploaded " + ((int) progress) + "% ...");
                         }
                     });
+        } else {
+            Toast.makeText(getApplicationContext(), "파일을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
         }
     }
 

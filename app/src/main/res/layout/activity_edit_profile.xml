@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ffffff">
 
@@ -62,6 +63,20 @@
             android:backgroundTint="@color/colorPrimary"
             android:tint="#FFFFFF"
     />
+
+    <ImageButton
+        android:id="@+id/imgbtnSave"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:layout_marginRight="100dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toEndOf="@+id/cardView"
+        app:layout_constraintBottom_toBottomOf="@id/cardView"
+        android:background="@drawable/content_save"
+        android:src="@drawable/camera_outline"
+        android:backgroundTint="@color/colorPrimary"
+        android:tint="#FFFFFF"
+        />
 
     <EditText
         android:id="@+id/nicknameViewedit"
