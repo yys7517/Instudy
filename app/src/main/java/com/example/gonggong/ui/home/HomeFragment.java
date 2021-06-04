@@ -75,6 +75,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
 
+
         swipeRefreshLayout = rootview.findViewById(R.id.refresh_layout);        // 스와이프 리프레시
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -126,7 +127,6 @@ public class HomeFragment extends Fragment {
         super.onResume();
         PostUpdate();
     }
-
 
     public void PostUpdate() {      //게시글 새로고침 메소드
         mSearchData.clear();        //게시글 목록 clear

@@ -42,6 +42,7 @@ public class StoryActivity extends AppCompatActivity{
 
     private String suserid;     //게시글 작성 사용자 ID
     private String spostcode;   //게시글 코드
+    private String snickname;   //사용자 닉네임
 
     private static String TAG = "게시글 보기";
 
@@ -76,22 +77,6 @@ public class StoryActivity extends AppCompatActivity{
         comment = (ImageView) findViewById(R.id.imgCommentIcon); //댓글화면으로 인텐트
         commentcount = (TextView) findViewById(R.id.txtCommentCount); //댓글화면으로 인텐트2
 
-        comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(StoryActivity.this,ReviewActivity.class);
-                intent.putExtra("post_code",spostcode);
-                startActivity(intent);
-            }
-        });
-        commentcount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(StoryActivity.this,ReviewActivity.class);
-                intent.putExtra("post_code",spostcode);
-                startActivity(intent);
-            }
-        });
 
         detailnick = (TextView) findViewById(R.id.txtDetailNick); //닉네임
         detaildate = (TextView) findViewById(R.id.txtDetailDate); //작성 날짜
@@ -108,6 +93,38 @@ public class StoryActivity extends AppCompatActivity{
 
         PostUpdate();
         CommentUpdate();
+
+        commentcount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StoryActivity.this,ReviewActivity.class);
+                intent.putExtra("post_code",spostcode);
+                intent.putExtra("user_id",suserid);
+                intent.putExtra("user_nickname",snickname);
+
+                Log.d("intent", "코드 값 : " + spostcode);
+                Log.d("intent", "아이디 값: " + suserid);
+                Log.d("intent", "닉네임 값 : " + snickname);
+
+                startActivity(intent);
+            }
+        });
+
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StoryActivity.this,ReviewActivity.class);
+                intent.putExtra("post_code",spostcode);
+                intent.putExtra("user_id",suserid);
+                intent.putExtra("user_nickname",snickname);
+
+                Log.d("intent", "코드 값" + spostcode);
+                Log.d("intent", "아이디 값" + suserid);
+                Log.d("intent", "닉네임 값" + snickname);
+
+                startActivity(intent);
+            }
+        });
     }
     // 값 가져오는 클래스
     private class GetData extends AsyncTask<String, Void, String> {
@@ -237,6 +254,7 @@ public class StoryActivity extends AppCompatActivity{
 
                     spostcode = POST_CODE;
                     suserid = POST_WID;
+                    snickname = POST_NICKNAME;
 
                     FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
                     StorageReference storageRef = storage.getReference();
