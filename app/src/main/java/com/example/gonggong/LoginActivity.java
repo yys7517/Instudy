@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,7 +57,7 @@ import kotlin.jvm.functions.Function2;
 
 
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends AppCompatActivity implements  GoogleApiClient.OnConnectionFailedListener {
 
     //카카오 로그인
     private FloatingActionButton mButtonKakao;
@@ -68,7 +69,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     //서버 IP
     private static String IP_ADDRESS = "211.211.158.42";
-    private static String StrUSER_ID, StrUSER_NICKNAME,StrUSER_EMAIL;
+    private static String StrUSER_ID, StrUSER_NICKNAME;
 
     //네이버 로그인
     private FloatingActionButton mButtonNaver;
@@ -108,6 +109,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mContext = getApplicationContext();
         init();
 
+        Login();
+
         appData = getSharedPreferences("appData", MODE_PRIVATE);
 
         //SharedPreferences 설정값 load ( saveLoginData, id, nickname )
@@ -115,27 +118,40 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // 이전에 로그인 정보를 저장시킨 기록이 있다면
         if (saveLoginData) {
-            Intent intent = new Intent(getApplicationContext() , MainActivity.class);
-            intent.putExtra("nickname",nickname);
+            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
             startActivity(intent);
         }
 
+
+
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.mButtonKakao:
-                Log.i("smartvendingmachine", "카카오 로그인");
+    private void Login() {
+        mButtonKakao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("gong gong", "카카오 로그인");
                 if (LoginClient.getInstance().isKakaoTalkLoginAvailable(LoginActivity.this)) { //카카오 설치되어있는지 확인
                     LoginClient.getInstance().loginWithKakaoTalk(LoginActivity.this, callback);
                 } else { //카톡이 설치되어있지 않을시
                     LoginClient.getInstance().loginWithKakaoAccount(LoginActivity.this, callback);
                 }
-                break;
+            }
+        });
 
-            case R.id.mButtonNaver:
-                Log.i("smartvendingmachine", "네이버 로그인");
+        mButtonGoogle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("gong gong", "구글 로그인");
+                Intent gintent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
+                startActivityForResult(gintent, REQ_SIGN_GOOGLE);
+            }
+        });
+
+        mButtonNaver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("gong gong", "네이버 로그인");
                 mOAuthLoginModule = OAuthLogin.getInstance();
                 mOAuthLoginModule.init(
                         mContext
@@ -164,32 +180,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     };
                 };
                 mOAuthLoginModule.startOauthLoginActivity(LoginActivity.this, mOAuthLoginHandler);
-                break;
 
-            case R.id.mButtonGoogle:
-                Log.i("smartvendingmachine", "구글 로그인");
-                Intent gintent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(gintent, REQ_SIGN_GOOGLE);
-
-            default:
-                break;
-        }
+            }
+        });
     }
 
     private void init() {
 
         //kakao
         mButtonKakao = (FloatingActionButton) findViewById(R.id.mButtonKakao);
-        mButtonKakao.setOnClickListener(this);
+
 
         //naver
         mButtonNaver = (FloatingActionButton) findViewById(R.id.mButtonNaver);
-        mButtonNaver.setOnClickListener(this);
+
 
 
         //google
         mButtonGoogle = (FloatingActionButton) findViewById(R.id.mButtonGoogle);
-        mButtonGoogle.setOnClickListener(this);
+
 
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -282,26 +291,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.d("네아로_이메일", jsonObject.getString("email"));
                     Log.d("네아로_이름", jsonObject.getString("name"));
                     Log.d("네아로_닉네임", jsonObject.getString("nickname"));
-                    //Log.d("네아로_프로필사진", jsonObject.getString("profile_image"));
 
                     StrUSER_ID = jsonObject.getString("id");
                     StrUSER_NICKNAME = jsonObject.getString("nickname");
-                    StrUSER_EMAIL = jsonObject.getString("email");
 
 
                     Log.d("USER_ID", StrUSER_ID);
                     Log.d("USER_NICKNAME", StrUSER_NICKNAME);
 
+                    InsertData naver = new InsertData();
+                    naver.execute("http://211.211.158.42/instudy/UserRegisterAndroid.php", StrUSER_ID, StrUSER_NICKNAME);
 
 
                     if ( ! (StrUSER_ID == null || StrUSER_NICKNAME == null || StrUSER_ID=="" || StrUSER_NICKNAME == "") )
                     {
                         save(true,StrUSER_ID,StrUSER_NICKNAME);
-                        InsertData task = new InsertData();
-                        task.execute("http://" + IP_ADDRESS + "/yongrun/svm/SIGNUP_ANDRIOD.php", StrUSER_ID, StrUSER_NICKNAME, StrUSER_EMAIL);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.putExtra("nickname",StrUSER_NICKNAME);
                         startActivity(intent);
+                        finish();
                     }
                     else {}
 
@@ -311,7 +318,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-    //네이버 회원 정보 서버 삽입
+
+
+    // 회원 정보 서버 삽입
     class InsertData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
 
@@ -338,10 +347,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             String USER_ID = (String) params[1];
             String USER_NICKNAME = (String) params[2];
-            String USER_EMAIL = (String) params[3];
             String serverURL = (String) params[0];
 
-            String postParameters = "&USER_ID=" + USER_ID + "&USER_NICKNAME=" + USER_NICKNAME + "&USER_EMAIL=" + USER_EMAIL;
+            String postParameters = "&UserID=" + USER_ID + "&UserNickName=" + USER_NICKNAME;
 
 
             try {
@@ -414,17 +422,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     StrUSER_ID = String.valueOf(user.getId());
                     StrUSER_NICKNAME = user.getKakaoAccount().getProfile().getNickname();
-                    StrUSER_EMAIL = user.getKakaoAccount().getEmail();
 
-                    InsertData task = new InsertData();
-                    task.execute("http://" + IP_ADDRESS + "/yongrun/svm/SIGNUP_ANDRIOD.php", StrUSER_ID, StrUSER_NICKNAME, StrUSER_EMAIL);
+                    Log.d("USER_ID", StrUSER_ID);
+                    Log.d("USER_NICKNAME", StrUSER_NICKNAME);
+
+                    InsertData kakao = new InsertData();
+                    kakao.execute("http://211.211.158.42/instudy/UserRegisterAndroid.php", StrUSER_ID, StrUSER_NICKNAME);
 
                     if ( ! (StrUSER_ID == null || StrUSER_NICKNAME == null || StrUSER_ID=="" || StrUSER_NICKNAME == "") )
+                    {
                         save(true,StrUSER_ID,StrUSER_NICKNAME);
+                        Intent intent = new Intent(LoginActivity.this , MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
 
-                    Intent intent = new Intent(LoginActivity.this , MainActivity.class);
-                    intent.putExtra("nickname",StrUSER_NICKNAME);
-                    startActivity(intent);
 
                 } else { //로그아웃 상태
 
@@ -461,17 +473,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                             StrUSER_ID = account.getId();
                             StrUSER_NICKNAME = account.getGivenName();
-                            StrUSER_EMAIL = account.getEmail();
 
-                            InsertData insert = new InsertData();
-                            insert.execute("http://" + IP_ADDRESS + "/yongrun/svm/SIGNUP_ANDRIOD.php", StrUSER_ID, StrUSER_NICKNAME, StrUSER_EMAIL);
+                            Log.d("USER_ID", StrUSER_ID);
+                            Log.d("USER_NICKNAME", StrUSER_NICKNAME);
+
+                            InsertData google = new InsertData();
+                            google.execute("http://211.211.158.42/instudy/UserRegisterAndroid.php", StrUSER_ID, StrUSER_NICKNAME);
+
 
                             if ( ! (StrUSER_ID == null || StrUSER_NICKNAME == null || StrUSER_ID=="" || StrUSER_NICKNAME == "") )
+                            {
                                 save(true,StrUSER_ID,StrUSER_NICKNAME);
+                                Intent intent = new Intent(LoginActivity.this , MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
 
-                            Intent intent = new Intent(LoginActivity.this , MainActivity.class);
-                            intent.putExtra("nickname",StrUSER_NICKNAME);
-                            startActivity(intent);
 
                         }
                         else{ //로그인이 실패했으면...
