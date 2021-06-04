@@ -2,10 +2,12 @@ package com.example.gonggong.ui.story;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -36,8 +38,10 @@ public class ReviewActivity extends AppCompatActivity {
     private ReviewAdapter adapter;
     private RecyclerView.LayoutManager  mLayoutManager;
     private ImageView backspace;
+    private EditText comment;
+    private ImageView commentsend;
 
-    private String spostcode,snickname,suserid;
+    private String spostcode,snickname,suserid,scontents;
 
     private ArrayList<ReviewData> mSearchData = new ArrayList<>();
 
@@ -47,6 +51,9 @@ public class ReviewActivity extends AppCompatActivity {
     private static String TAG = "phptest";
     private String mJsonString;
 
+    private SharedPreferences appData;
+    private String UserID;
+
     @Override
     protected void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +61,33 @@ public class ReviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        spostcode = intent.getStringExtra("post_code");
-        snickname = intent.getStringExtra("user_id");
-        suserid = intent.getStringExtra("user_nickname");
+
 
         backspace = findViewById(R.id.backspace);
+        comment = findViewById(R.id.comment);
+        commentsend = findViewById(R.id.imgCommentSend);
+
+        //로그인 한 APP 사용자 아이디 값 가져오기
+        appData = getSharedPreferences("appData", MODE_PRIVATE);
+        UserID = appData.getString("ID", "");
+
+        spostcode = intent.getStringExtra("post_code");         // 댓글 남길 게시물 코드
+        suserid = UserID;                                             // 댓글 작성자 즉, 사용자 ID
+
+
+        //로그인 한 APP 사용자 아이디를 통해 닉네임 값 가져오기~
+
+        //댓글 작성 완료 버튼 눌렀을 때
+        commentsend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Comment commentwrite = new Comment();
+                commentwrite.execute("http://" + IP_ADDRESS + "/instudy/User.php","");       // snickname 에 사용자 닉네임 값 가져와서 넣기.
+
+                scontents = comment.getText().toString();
+
+            }
+        });
 
         backspace.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,6 +213,145 @@ public class ReviewActivity extends AppCompatActivity {
             }
 
         }
+    }
+    private class Comment extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null) {
+
+            } else {
+
+                mJsonString = result;
+                snickname = ShowUser();
+
+                Log.d("comment", "댓글 작성할 게시물 코드 : " + spostcode);
+                Log.d("comment", "댓글 작성자 아이디 : " + suserid);
+                Log.d("comment", "댓글 작성자 닉네임 : " + snickname);
+                Log.d("comment", "댓글 작성 내용 : " +scontents);
+
+
+                //댓글 작성
+                InsertComment insertComment = new InsertComment();
+                insertComment.execute("http://" + IP_ADDRESS + "/instudy/PostCommentWriteAndroid.php", spostcode, suserid, snickname, scontents);
+
+                //댓글 란 초기화
+                comment.setText("");
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(ReviewActivity.this, "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+    private String ShowUser() {
+
+        String TAG_JSON = "UserImg Table";
+        String TAG_USER_ID = "UserID";
+        String TAG_USER_NICKNAME = "UserNickName";
+        String TAG_USER_PROFILE = "UserProfile";
+
+
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for (int i = jsonArray.length()-1; i>=0; i--) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String USER_ID = item.getString(TAG_USER_ID);
+
+                if( USER_ID.equals(UserID) ) {       // 사용자 ID와 일치하는 닉네임 값 가져오자
+
+                    String USER_NICKNAME = item.getString(TAG_USER_NICKNAME);       // 사용자 ID와 일치하는 닉네임 값임
+                    String USER_PROFILE = item.getString(TAG_USER_PROFILE);         // 사용자 ID와 일치하는 프로필 사진 경로 값.
+
+                    snickname = USER_NICKNAME;
+                }
+                else {}
+
+            }
+
+        } catch (JSONException e) {
+
+            Log.d(TAG, "showResult : ", e);
+        }
+        return snickname;
     }
 
 
