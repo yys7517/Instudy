@@ -19,15 +19,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.gonggong.R;
-import com.example.gonggong.ui.profile.ProfileEdit;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -41,7 +45,11 @@ import java.util.Date;
 
 public class BoardWriteActivity extends AppCompatActivity {
 
-    private String POST_NICKNAME, POST_ID, POST_CONTENTS;       //게시글 작성 PHP 제목, 닉네임, ID, 내용 인자 값
+    private String POST_NICKNAME, POST_ID, POST_CONTENTS, POST_IMGPATH;       //게시글 작성 PHP 제목, 닉네임, ID, 내용 인자 값
+    private String GET_POST_CODE;
+    private String mJsonString; // JSON 파싱 값을 받아서 임시로 담는 공간.
+
+    private String UPLOAD_ID, UPLOAD_CONTENTS, UPLOAD_CODE;
 
     private static String IP_ADDRESS = "211.211.158.42";
     private static String TAG = "instudy";
@@ -95,9 +103,18 @@ public class BoardWriteActivity extends AppCompatActivity {
                 POST_CONTENTS = mEditTextContents.getText().toString();
                 InsertData task = new InsertData();
                 task.execute("http://" + IP_ADDRESS + "/instudy/PostWriteAndroid.php", POST_ID, POST_NICKNAME, POST_CONTENTS);
-                Toast.makeText(getApplicationContext(), "건의사항이 등록되었습니다.", Toast.LENGTH_SHORT).show();
 
-                finish();
+                UPLOAD_ID = POST_ID;
+                UPLOAD_CONTENTS = POST_CONTENTS;
+
+                Log.d("업로드", "WHO:" +UPLOAD_ID);
+                Log.d("업로드", "WHAT:" +UPLOAD_CONTENTS);
+
+
+                GetPostCode getPostCode = new GetPostCode();
+                getPostCode.execute("http://" + IP_ADDRESS + "/instudy/Post.php", "");
+
+                Toast.makeText(getApplicationContext(), "게시글이 등록되었습니다.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -146,6 +163,9 @@ public class BoardWriteActivity extends AppCompatActivity {
             String filename = formatter.format(now) + ".png";
             //storage 주소와 폴더 파일명을 지정해 준다.
             StorageReference storageRef = storage.getReferenceFromUrl("gs://gonggong-60888.appspot.com").child("images/" + filename);
+
+            POST_IMGPATH = "images/" + filename;
+
             //올라가거라...
             storageRef.putFile(filePath)
                     //성공시
@@ -154,6 +174,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss(); //업로드 진행 Dialog 상자 닫기
                             Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     })
                     //실패시
@@ -162,6 +183,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "업로드 실패!", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     })
                     //진행중
@@ -178,7 +200,6 @@ public class BoardWriteActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "파일을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     class InsertData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
@@ -209,6 +230,228 @@ public class BoardWriteActivity extends AppCompatActivity {
 
             String postParameters = "PostWID=" + USER_ID + "&PostNickName=" + USER_NICKNAME +
                     "&PostContent=" + POST_CONTENTS;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+                bufferedReader.close();
+
+                return sb.toString();
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
+    }
+    // 값 가져오는 클래스
+    private class GetPostCode extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(BoardWriteActivity.this, "Please Wait", null, true, true);
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null) {
+
+            } else {
+
+                mJsonString = result;
+                UPLOAD_CODE = showBoard();   //  showBoard 메소드 실행
+                Log.d("게시글 코드 가져오기", "GET_CODE:" +UPLOAD_CODE);
+
+                uploadFile();           // 이미지 업로드 + 이미지 경로 가져오기 POST_IMGPATH에 넣기.
+
+                Log.d("업로드", "이미지 경로:" +POST_IMGPATH);      // 여기까진 받아온다.
+
+                InsertImage image = new InsertImage();
+                image.execute("http://" + IP_ADDRESS + "/instudy/PostImageUploadAndroid.php", UPLOAD_CODE, POST_IMGPATH);
+            }
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
+    private String showBoard() {
+
+        String TAG_JSON = "Post Table";
+        String TAG_CODE = "PostCode";
+        String TAG_POST_WID = "PostWID";
+        String TAG_NICKNAME = "PostNickName";
+        String TAG_DATE = "PostDate";
+        String TAG_CONTENTS = "PostContent";
+        String TAG_IMGPATH = "PostImgPath";
+
+
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for (int i = jsonArray.length()-1; i>=0; i--) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String POST_CODE = item.getString(TAG_CODE);
+                String POST_WID = item.getString(TAG_POST_WID);
+                String POST_NICKNAME = item.getString(TAG_NICKNAME);
+                String POST_CONTENTS = item.getString(TAG_CONTENTS);
+                String POST_DATE = item.getString(TAG_DATE);
+
+                if( POST_WID.equals(UPLOAD_ID) && POST_CONTENTS.equals(UPLOAD_CONTENTS) )   //업로드 아이디랑 업로드 내용이랑 같은 게시글의 코드 가져오기 ( 기준 ㅈ같다 ㅋㅋ )
+                {
+                    GET_POST_CODE = POST_CODE;
+                }
+
+            }
+            UPLOAD_CODE = GET_POST_CODE;
+
+        } catch (JSONException e) {
+
+            Log.d(TAG, "showResult : ", e);
+        }
+        return UPLOAD_CODE;
+    }
+
+
+    class InsertImage extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(BoardWriteActivity.this, "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressDialog.dismiss();
+            mTextViewPostResult.setText(result);
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = (String) params[0];
+            String POST_CODE = (String) params[1];
+            String IMG_PATH = (String) params[2];
+
+            String postParameters = "&PostCode=" + POST_CODE + "&PostImgPath=" + IMG_PATH;
 
             try {
 
