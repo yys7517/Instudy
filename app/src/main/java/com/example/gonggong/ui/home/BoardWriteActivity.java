@@ -1,9 +1,13 @@
 package com.example.gonggong.ui.home;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,30 +16,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.gonggong.R;
+import com.example.gonggong.ui.profile.ProfileEdit;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class BoardWriteActivity extends AppCompatActivity {
 
-    private String POST_TITLE, POST_NICKNAME, POST_ID ,POST_CONTENTS;       //게시글 작성 PHP 제목, 닉네임, ID, 내용 인자 값
+    private String POST_NICKNAME, POST_ID, POST_CONTENTS;       //게시글 작성 PHP 제목, 닉네임, ID, 내용 인자 값
 
     private static String IP_ADDRESS = "211.211.158.42";
-    private static String TAG = "SmartVendingMachine";
+    private static String TAG = "instudy";
 
 
-    EditText mEditTextTitle, mEditTextContents;
+    EditText mEditTextContents;
     TextView mTextViewPostResult;
     Button mButtonSubmit;
-    ImageView backspace;
+    ImageView backspace, imgselect, selectimgview;
+
+    private Uri filePath;
 
     //SharedPreferences
     private SharedPreferences appData;
@@ -43,18 +60,24 @@ public class BoardWriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.board_write);
-//
-//
-//        mEditTextTitle = (EditText) findViewById(R.id.mEditTextTitle);
-//        mEditTextContents = (EditText) findViewById(R.id.mEditTextContents);
-//
-//        mTextViewPostResult = (TextView) findViewById(R.id.mTextViewPostResult);
-//
-//        mButtonSubmit = (Button) findViewById(R.id.mButtonSubmit);
+        setContentView(R.layout.board_write);
+        mEditTextContents = (EditText) findViewById(R.id.mEditTextContents);
+        mTextViewPostResult = (TextView) findViewById(R.id.mTextViewPostResult);
+        mButtonSubmit = (Button) findViewById(R.id.mButtonSubmit);
+        backspace = (ImageView) findViewById(R.id.backspace);
+        imgselect = (ImageView) findViewById(R.id.imgselect);
+        selectimgview = (ImageView) findViewById(R.id.selectimgView);
 
-        backspace = findViewById(R.id.backspace);
-
+        imgselect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //이미지를 선택
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "이미지를 선택하세요."), 0);
+            }
+        });
 
 
         //SharedPreferences
@@ -68,11 +91,10 @@ public class BoardWriteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 POST_ID = userid;       // APP 사용자 ID 값 작성자 ID값으로 인자 값 넘겨주기
-                POST_TITLE = mEditTextTitle.getText().toString();
                 POST_NICKNAME = user_nickname;  // APP 사용자 닉네임 값 작성자 닉네임 값으로 인자 값 넘겨주기
                 POST_CONTENTS = mEditTextContents.getText().toString();
                 InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/yongrun/svm/POST_WRITE_ANDROID.php", POST_TITLE, POST_ID ,POST_NICKNAME, POST_CONTENTS);
+                task.execute("http://" + IP_ADDRESS + "/instudy/PostWriteAndroid.php", POST_ID, POST_NICKNAME, POST_CONTENTS);
                 Toast.makeText(getApplicationContext(), "건의사항이 등록되었습니다.", Toast.LENGTH_SHORT).show();
 
                 finish();
@@ -88,6 +110,76 @@ public class BoardWriteActivity extends AppCompatActivity {
         });
     }
 
+    //결과 처리
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //request코드가 0이고 OK를 선택했고 data에 뭔가가 들어 있다면
+        if(requestCode == 0 && resultCode == RESULT_OK){
+            filePath = data.getData();
+            Log.d(TAG, "uri:" + String.valueOf(filePath));
+            try {
+                //Uri 파일을 Bitmap으로 만들어서 ImageView에 집어 넣는다.
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(BoardWriteActivity.this.getContentResolver(), filePath);
+                selectimgview.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //upload the file
+    private void uploadFile() {
+        //업로드할 파일이 있으면 수행
+        if (filePath != null) {
+            //업로드 진행 Dialog 보이기
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("업로드중...");
+            progressDialog.show();
+
+            //storage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+
+            //Unique한 파일명을 만들자.
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMHH_mmss");
+            Date now = new Date();
+            String filename = formatter.format(now) + ".png";
+            //storage 주소와 폴더 파일명을 지정해 준다.
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://gonggong-60888.appspot.com").child("images/" + filename);
+            //올라가거라...
+            storageRef.putFile(filePath)
+                    //성공시
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss(); //업로드 진행 Dialog 상자 닫기
+                            Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    //실패시
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "업로드 실패!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    //진행중
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            @SuppressWarnings("VisibleForTests") //이걸 넣어 줘야 아랫줄에 에러가 사라진다. 넌 누구냐?
+                            double progress = (100 * taskSnapshot.getBytesTransferred()) /  taskSnapshot.getTotalByteCount();
+                            //dialog에 진행률을 퍼센트로 출력해 준다
+                            progressDialog.setMessage("Uploaded " + ((int) progress) + "% ...");
+                        }
+                    });
+        } else {
+            Toast.makeText(getApplicationContext(), "파일을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     class InsertData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
 
@@ -102,7 +194,6 @@ public class BoardWriteActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-
             progressDialog.dismiss();
             mTextViewPostResult.setText(result);
             Log.d(TAG, "POST response  - " + result);
@@ -111,13 +202,13 @@ public class BoardWriteActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            String POST_TITLE = (String) params[1];
-            String POST_ID = (String) params[2];
-            String POST_NICKNAME = (String) params[3];
-            String POST_CONTENTS = (String) params[4];
             String serverURL = (String) params[0];
+            String USER_ID = (String) params[1];
+            String USER_NICKNAME = (String) params[2];
+            String USER_CONTENTS = (String) params[3];
 
-            String postParameters = "POST_TITLE=" + POST_TITLE + "&POST_ID=" + POST_ID +"&POST_NICKNAME=" + POST_NICKNAME + "&POST_CONTENTS=" + POST_CONTENTS;
+            String postParameters = "PostWID=" + USER_ID + "&PostNickName=" + USER_NICKNAME +
+                    "&PostContent=" + POST_CONTENTS;
 
             try {
 

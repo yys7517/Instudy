@@ -32,6 +32,7 @@
         <activity android:name=".Intro.IntroActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".ui.home.BoardWriteActivity"/>
         <activity android:name=".ui.profile.ProfileEdit" />
         <activity android:name=".ui.story.ReviewActivity"/>
         <activity android:name=".ui.story.StoryActivity"/>

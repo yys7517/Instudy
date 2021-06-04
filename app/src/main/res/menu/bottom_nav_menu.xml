@@ -3,22 +3,22 @@
 
     <item
             android:id="@+id/frag_navigation_home"
-            android:icon="@drawable/tabbar_home_selected_btn"
+            android:icon="@drawable/home_outline"
             android:title="홈"/>
 
     <item
             android:id="@+id/frag_navigation_story"
-            android:icon="@drawable/tabbar_story_selected_btn"
+            android:icon="@drawable/magnify"
             android:title="스토리"/>
 
     <item
             android:id="@+id/frag_navigation_calender"
-            android:icon="@drawable/tabbar_notice_selected_btn"
+            android:icon="@drawable/calendar_multiselect"
             android:title="캘린더"/>
 
     <item
             android:id="@+id/frag_navigation_profile"
-            android:icon="@drawable/tabbar_profile_selected_btn"
+            android:icon="@drawable/account_outline"
             android:title="프로필"/>
 
 </menu>
