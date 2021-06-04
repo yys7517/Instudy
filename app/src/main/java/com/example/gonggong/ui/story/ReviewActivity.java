@@ -37,7 +37,7 @@ public class ReviewActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager  mLayoutManager;
     private ImageView backspace;
 
-    private String spostcode;
+    private String spostcode,snickname,suserid;
 
     private ArrayList<ReviewData> mSearchData = new ArrayList<>();
 
@@ -55,6 +55,8 @@ public class ReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         spostcode = intent.getStringExtra("post_code");
+        snickname = intent.getStringExtra("user_id");
+        suserid = intent.getStringExtra("user_nickname");
 
         backspace = findViewById(R.id.backspace);
 
@@ -92,15 +94,15 @@ public class ReviewActivity extends AppCompatActivity {
         CommentUpdate();
     }
 
-    public void CommentUpdate() {
+    public void CommentUpdate() {       // 댓글 가져오기
         mSearchData.clear();
         adapter.notifyDataSetChanged();
         GetData task = new GetData();
         task.execute("http://" + IP_ADDRESS + "/instudy/PostComment.php", "");
     }
 
-    //닉네임 변경 클래스
-    class EditData extends AsyncTask<String, Void, String> {
+    //댓글 입력 클래스
+    class InsertComment extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
 
 
@@ -117,6 +119,7 @@ public class ReviewActivity extends AppCompatActivity {
 
             progressDialog.dismiss();
             Log.d(TAG, "POST response  - " + result);
+            CommentUpdate();                // 댓글 쓰고나서 댓글 새로고침해야 될거 아니야 ~ 안해?
         }
 
         @Override
@@ -125,11 +128,11 @@ public class ReviewActivity extends AppCompatActivity {
             String POST_CODE = (String) params[1];
             String USER_ID = (String) params[2];
             String USER_NICKNAME = (String) params[3];
-            String USER_CONTENTS = (String) params[4];
+            String USER_COMMENTS = (String) params[4];
 
 
             String postParameters = "PostCode=" + POST_CODE + "&PostCommentWID=" + USER_ID
-                    + "&PostCommentNickName=" + USER_NICKNAME  + "&PostComment=" + USER_CONTENTS;
+                    + "&PostCommentNickName=" + USER_NICKNAME  + "&PostComment=" + USER_COMMENTS;
 
             try {
 
