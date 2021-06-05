@@ -314,22 +314,19 @@ public class CalenderFragment extends Fragment {
                 int D = Integer.parseInt(Dates[2]);
 
                 if (YY == Y && MM == M && DD == D) {
+                    HomeData mHomeData = new HomeData();
 
-                    if(POST_WID == "1633866283") {
-                        HomeData mHomeData = new HomeData();
+                    mHomeData.setCode(POST_CODE); // 게시글 코드
+                    mHomeData.setImgPost(POST_IMGPATH); // 게시글 사진 경로
 
-                        mHomeData.setCode(POST_CODE); // 게시글 코드
-                        mHomeData.setImgPost(POST_IMGPATH); // 게시글 사진 경로
+                    mHomeData.setNickname(POST_NICKNAME); // 게시글 작성자
+                    mHomeData.setDate(POST_DATE); // 게시글 작성 날짜
+                    mHomeData.setContents(POST_CONTENTS); // 게시글 내용
 
-                        mHomeData.setNickname(POST_NICKNAME); // 게시글 작성자
-                        mHomeData.setDate(POST_DATE); // 게시글 작성 날짜
-                        mHomeData.setContents(POST_CONTENTS); // 게시글 내용
+                    mHomeData.setUserid(POST_WID);   // 게시글 작성자 ID
 
-                        mHomeData.setUserid(POST_WID);   // 게시글 작성자 ID
-
-                        mHomeDatas.add(mHomeData);
-                        adapter.notifyDataSetChanged();
-                    }
+                    mHomeDatas.add(mHomeData);
+                    adapter.notifyDataSetChanged();
                 }
             }
 
