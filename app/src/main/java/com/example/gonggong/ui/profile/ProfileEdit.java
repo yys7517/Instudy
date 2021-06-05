@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.gonggong.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -58,7 +59,7 @@ public class ProfileEdit extends AppCompatActivity {
 
     private static String IP_ADDRESS = "211.211.158.42/instudy";
     private static String TAG1 = "프로필수정 게시물";
-
+    String userid;
     ImageView backspace;
     ImageButton imgbtncamera, imgsave;
     TextView mTextViewPostResult;
@@ -88,7 +89,7 @@ public class ProfileEdit extends AppCompatActivity {
 
         //SharedPreferences
         appData = getSharedPreferences("appData", MODE_PRIVATE);
-        String userid = appData.getString("ID", ""); // App 사용자 ID
+        userid = appData.getString("ID", ""); // App 사용자 ID
 
         profileimgview = (CircleImageView) findViewById(R.id.cardView);
 
@@ -172,6 +173,7 @@ public class ProfileEdit extends AppCompatActivity {
                 }
             }
         });
+        getImg();
     }
 
     //결과 처리
@@ -220,11 +222,9 @@ public class ProfileEdit extends AppCompatActivity {
             FirebaseStorage storage = FirebaseStorage.getInstance();
 
             //Unique한 파일명을 만들자.
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMHH_mmss");
-            Date now = new Date();
-            String filename = formatter.format(now) + ".png";
+            String filename = userid + ".png";
             //storage 주소와 폴더 파일명을 지정해 준다.
-            StorageReference storageRef = storage.getReferenceFromUrl("gs://gonggong-60888.appspot.com").child("images/" + filename);
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://gonggong-60888.appspot.com").child(userid+"/" + filename);
             //올라가거라...
             storageRef.putFile(filePath)
                     //성공시
@@ -353,5 +353,25 @@ public class ProfileEdit extends AppCompatActivity {
             }
 
         }
+    }
+
+    //프로필 이미지 가져오ㄱㅣ
+    private void getImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
+        StorageReference storageRef = storage.getReference();
+        storageRef.child(userid+"/"+userid+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지 로드 성공시
+                Glide.with(getApplicationContext()).load(uri).into(profileimgview);
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //이미지 로드 실패시
+                Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

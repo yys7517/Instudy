@@ -3,6 +3,7 @@ package com.example.gonggong.ui.profile;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.service.autofill.UserData;
@@ -12,13 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.gonggong.LoginActivity;
 import com.example.gonggong.MainActivity;
 import com.example.gonggong.R;
@@ -26,6 +30,10 @@ import com.example.gonggong.ui.home.HomeAdapter;
 import com.example.gonggong.ui.home.HomeData;
 import com.example.gonggong.ui.home.HomeFragment;
 import com.example.gonggong.ui.story.StoryActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,6 +95,7 @@ public class ProfileFragment extends Fragment {
         following = (TextView) rootView.findViewById(R.id.txt_profile_following_number);
         follower = (TextView) rootView.findViewById(R.id.txt_profile_follower_number);
 
+        userimg = (CircleImageView) rootView.findViewById(R.id.proimg); //유저 프사
 
         edit_profile = (ImageView) rootView.findViewById(R.id.account_cog);
 
@@ -124,6 +133,8 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+        getImg();
         return rootView;
     }
 
@@ -454,5 +465,26 @@ public class ProfileFragment extends Fragment {
         getSharedLoad();        // Shared값 변경되었을 수 있으니 최신화하기
         PostUpdate();
         UserUpdate();           // 내 게시글 정보 최신화
+        getImg();
+    }
+
+    //프로필 이미지 가져오기
+    private void getImg() {
+        FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
+        StorageReference storageRef = storage.getReference();
+        storageRef.child(user_id+"/"+user_id+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지 로드 성공시
+                Glide.with(getActivity()).load(uri).into(userimg);
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //이미지 로드 실패시
+                Toast.makeText(getActivity(), "실패", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
