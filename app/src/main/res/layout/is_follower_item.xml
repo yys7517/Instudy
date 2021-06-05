@@ -19,7 +19,7 @@
             app:layout_constraintStart_toStartOf="@+id/itemProfile_container"
             app:layout_constraintTop_toTopOf="@+id/itemProfile_container"
             app:layout_constraintHorizontal_bias="0.15"
-            android:src="@drawable/test"/>
+            android:src="@drawable/default_user"/>
 
 
 

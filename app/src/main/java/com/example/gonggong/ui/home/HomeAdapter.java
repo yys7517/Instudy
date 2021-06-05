@@ -107,19 +107,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         FirebaseStorage storage = FirebaseStorage.getInstance("gs://gonggong-60888.appspot.com");
         StorageReference storageRef = storage.getReference();
-        storageRef.child( iData.get(position).getImgPost() ).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storageRef.child(iData.get(position).getImgPost()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 //이미지 로드 성공시
-                Glide.with(holder.itemView.getContext()).load( uri ).into( holder.imgPost );   //게시글 사진
+                Glide.with(holder.itemView.getContext()).load(uri).into(holder.imgPost);   //게시글 사진
             }
 
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 //이미지 로드 실패시
+                Glide.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.imgPost);
             }
         });
+
 
         holder.nickname.setText( iData.get(position).getNickname() );   //닉네임
         holder.contents.setText(iData.get(position).getContents());     //내용

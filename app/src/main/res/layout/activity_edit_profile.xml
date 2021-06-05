@@ -38,18 +38,35 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
+        <Button
+            android:id="@+id/mButtonStart"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/round_button"
+            android:text="완료"
+            android:textSize="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cardView"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="36dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/constraintLayout_edit_profile"
-            app:layout_constraintStart_toStartOf="parent"
-            android:src="@drawable/test" app:layout_constraintHorizontal_bias="0.50"/>
+        android:id="@+id/cardView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="36dp"
+        android:src="@drawable/default_user"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraintLayout_edit_profile" />
+
     <ImageButton
             android:id="@+id/imgbtnCamera"
             android:layout_width="27dp"
@@ -127,24 +144,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewedit" />
 
-    <Button
-            android:id="@+id/mButtonStart"
-            android:layout_width="match_parent"
-
-            android:layout_height="60dp"
-            android:layout_gravity="right|bottom"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/btn_start"
-            android:text="확인"
-            android:textColor="@color/colorWhite"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.95" />
 
     <TextView
         android:id="@+id/mTextViewPostResult"

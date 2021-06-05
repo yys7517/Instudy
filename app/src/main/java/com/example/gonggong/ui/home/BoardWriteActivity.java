@@ -50,6 +50,8 @@ public class BoardWriteActivity extends AppCompatActivity {
     private String mJsonString; // JSON 파싱 값을 받아서 임시로 담는 공간.
 
     private String UPLOAD_ID, UPLOAD_CONTENTS, UPLOAD_CODE;
+    private String GET_CODE;
+    private String userid, user_nickname;
 
     private static String IP_ADDRESS = "211.211.158.42";
     private static String TAG = "instudy";
@@ -91,8 +93,8 @@ public class BoardWriteActivity extends AppCompatActivity {
         //SharedPreferences
         appData = getSharedPreferences("appData", MODE_PRIVATE);
 
-        String userid = appData.getString("ID", ""); // App 사용자 ID
-        String user_nickname = appData.getString("NICKNAME", "");
+        userid = appData.getString("ID", ""); // App 사용자 ID
+        user_nickname = appData.getString("NICKNAME", "");
 
         //건의사항 작성 완료 버튼.
         mButtonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -229,7 +231,7 @@ public class BoardWriteActivity extends AppCompatActivity {
             String USER_CONTENTS = (String) params[3];
 
             String postParameters = "PostWID=" + USER_ID + "&PostNickName=" + USER_NICKNAME +
-                    "&PostContent=" + POST_CONTENTS;
+                    "&PostContent=" + USER_CONTENTS;
 
             try {
 
@@ -302,13 +304,16 @@ public class BoardWriteActivity extends AppCompatActivity {
 
             progressDialog.dismiss();
 
-            Log.d(TAG, "response - " + result);
+            Log.d(TAG, "코드 가져오자 - " + result);
 
             if (result == null) {
 
             } else {
 
                 mJsonString = result;
+                Log.d("업로드", "업로드 아이디 :" +UPLOAD_ID);
+                Log.d("업로드", "업로드 내용 :" +UPLOAD_CONTENTS);
+
                 UPLOAD_CODE = showBoard();   //  showBoard 메소드 실행
                 Log.d("게시글 코드 가져오기", "GET_CODE:" +UPLOAD_CODE);
 
@@ -386,36 +391,35 @@ public class BoardWriteActivity extends AppCompatActivity {
 
     private String showBoard() {
 
-        String TAG_JSON = "Post Table";
+        String TAG_JSON = "Post";
         String TAG_CODE = "PostCode";
         String TAG_POST_WID = "PostWID";
         String TAG_NICKNAME = "PostNickName";
-        String TAG_DATE = "PostDate";
         String TAG_CONTENTS = "PostContent";
-        String TAG_IMGPATH = "PostImgPath";
+
 
 
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
 
-            for (int i = jsonArray.length()-1; i>=0; i--) {
+            for (int i = 0; i<jsonArray.length(); i++) {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
-                String POST_CODE = item.getString(TAG_CODE);
+                String POST_CONTENTS = item.getString(TAG_CONTENTS);
                 String POST_WID = item.getString(TAG_POST_WID);
                 String POST_NICKNAME = item.getString(TAG_NICKNAME);
-                String POST_CONTENTS = item.getString(TAG_CONTENTS);
-                String POST_DATE = item.getString(TAG_DATE);
 
-                if( POST_WID.equals(UPLOAD_ID) && POST_CONTENTS.equals(UPLOAD_CONTENTS) )   //업로드 아이디랑 업로드 내용이랑 같은 게시글의 코드 가져오기 ( 기준 ㅈ같다 ㅋㅋ )
+                if( UPLOAD_CONTENTS.equals( POST_CONTENTS ) && POST_NICKNAME.equals(user_nickname) && POST_WID.equals( userid ) )   //업로드 아이디랑 업로드 내용이랑 같은 게시글의 코드 가져오기 ( 기준 ㅈ같다 ㅋㅋ )
                 {
-                    GET_POST_CODE = POST_CODE;
+                    String POST_CODE = item.getString(TAG_CODE);
+                    GET_CODE = POST_CODE;
                 }
-
+                else
+                    continue;
             }
-            UPLOAD_CODE = GET_POST_CODE;
+            UPLOAD_CODE = GET_CODE;
 
         } catch (JSONException e) {
 

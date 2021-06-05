@@ -102,8 +102,6 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("date", mSearchData.get(position).getDate());
 
                 startActivity(intent);
-
-
             }
         });
 

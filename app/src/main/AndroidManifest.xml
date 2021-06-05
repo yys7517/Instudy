@@ -36,6 +36,7 @@
         <activity android:name=".ui.profile.ProfileEdit" />
         <activity android:name=".ui.story.ReviewActivity"/>
         <activity android:name=".ui.story.StoryActivity"/>
+        <activity android:name=".ui.story.StoryModifyActivity"/>
 
 
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
