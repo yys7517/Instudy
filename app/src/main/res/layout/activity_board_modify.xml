@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="글쓰기"
+            android:text="게시글 수정"
             android:textColor="#000000"
             android:textSize="17sp"
             app:layout_constraintBottom_toBottomOf="@id/constraint"
@@ -39,14 +39,12 @@
             android:id="@+id/mButtonSubmit"
             android:layout_width="60dp"
             android:layout_height="30dp"
-            android:layout_margin="20dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/round_button"
             android:text="완료"
             android:textSize="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
