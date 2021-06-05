@@ -170,11 +170,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             }
         }
 
-
-
-        getImg();
-        Glide.with(holder.itemView.getContext()).load(Image).into(holder.profile);
-
         holder.nickname.setText(reviewdata.get(position).getNickname());
         holder.contents.setText(reviewdata.get(position).getContents());
         holder.date.setText(reviewdata.get(position).getDate());
