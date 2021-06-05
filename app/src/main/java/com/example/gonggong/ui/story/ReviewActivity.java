@@ -125,7 +125,6 @@ public class ReviewActivity extends AppCompatActivity {
 
     public void CommentUpdate() {       // 댓글 가져오기
         mSearchData.clear();
-        adapter.notifyDataSetChanged();
         GetData task = new GetData();
         task.execute("http://" + IP_ADDRESS + "/instudy/PostComment.php", "");
     }
@@ -450,6 +449,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         String TAG_JSON = "PostComment Table";
         String TAG_POST_CODE = "PostCode";
+        String TAG_COMMENT_CODE = "PostCommentCode";
         String TAG_COMMENT_WID = "PostCommentWID";
         String TAG_COMMENT_NICK = "PostCommentNickName";
         String TAG_COMMENT_CONTENTS = "PostComment";
@@ -468,16 +468,22 @@ public class ReviewActivity extends AppCompatActivity {
                 if(POST_CODE.equals(spostcode)) {       // 게시글 코드가 일치하는 댓글들만 출력한다.
 
                     String COMMENT_WID = item.getString(TAG_COMMENT_WID);       // 댓글 작성자 ID << 이거로 프로필 사진 가져와야함.
-
+                    String COMMENT_CODE = item.getString(TAG_COMMENT_CODE);
                     String COMMENT_NICK = item.getString(TAG_COMMENT_NICK);
                     String COMMENT_CONTENTS = item.getString(TAG_COMMENT_CONTENTS);
                     String COMMENT_DATE = item.getString(TAG_COMMENT_DATE);
 
                     ReviewData reviewData = new ReviewData();
 
+                    //보여주는 값
                     reviewData.setNickname(COMMENT_NICK); // 댓글 작성자 닉네임
                     reviewData.setDate(COMMENT_DATE); // 게시글 작성 날짜
                     reviewData.setContents(COMMENT_CONTENTS); // 게시글 내용
+
+                    //중요한 값
+                    reviewData.setCode(COMMENT_CODE);       //댓글 코드
+                    reviewData.setUserid(COMMENT_WID);        //댓글 작성자 아이디
+
 
                     mSearchData.add(reviewData);
                     adapter.notifyDataSetChanged();

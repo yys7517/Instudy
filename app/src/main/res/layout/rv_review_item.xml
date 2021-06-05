@@ -34,6 +34,35 @@
         app:layout_constraintStart_toEndOf="@+id/imgProfile"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/mButtonEdit"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_button"
+        android:text="수정"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/mButtonDelete"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/round_button_red"
+        android:layout_marginRight="10dp"
+        android:text="삭제"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:textColor="#E91E63"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/mButtonEdit"
+        />
+
     <TextView
         android:id="@+id/txtContents"
         android:layout_width="wrap_content"

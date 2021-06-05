@@ -1,6 +1,8 @@
 package com.example.gonggong.ui.story;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.gonggong.R;
@@ -68,6 +71,11 @@ public class StoryActivity extends AppCompatActivity {
 
         storybackimg = (ImageView) findViewById(R.id.storyBackImg); //뒤로가기
 
+        Intent intent = getIntent();
+
+        suserid = intent.getStringExtra("userid");
+        spostcode = intent.getStringExtra("post_code");
+
         storybackimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,13 +88,40 @@ public class StoryActivity extends AppCompatActivity {
         deletebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String USER_CODE = spostcode;
-                Log.i(TAG, "게시물 CODE : " + USER_CODE);
+                if(suserid.equals(userid)) {
 
-                DeleteData task = new DeleteData();
-                task.execute("http://" + IP_ADDRESS + "/instudy/PostDeleteAndroid.php", USER_CODE);
-                Toast.makeText(getApplicationContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                finish();
+                    // App 사용자 ID와 글 작성자 ID가 일치
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(StoryActivity.this, R.style.MyDialogTheme);
+                    dlg.setTitle("게시글 삭제");
+                    dlg.setMessage("게시글을 삭제하시겠습니까 ? ");
+                    dlg.setIcon(R.drawable.delete);
+
+                    dlg.setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    dlg.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //게시글 삭제 코드
+                            Log.i(TAG, "게시물 CODE : " + spostcode);
+                            PostDelete();
+                            Toast.makeText(getApplicationContext(), "게시글이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+
+                    });
+
+                    AlertDialog alertDialog = dlg.create();
+                    dlg.show();
+                }
+                else {
+                    // App 사용자 ID와 글 작성자 ID가 일치 X
+                }
+
+
             }
         });
 
@@ -98,10 +133,7 @@ public class StoryActivity extends AppCompatActivity {
         maintext = (TextView) findViewById(R.id.txtMain); //글 내용
         imgPost = (ImageView) findViewById(R.id.imgPost);  // 글 사진
 
-        Intent intent = getIntent();
 
-        suserid = intent.getStringExtra("userid");
-        spostcode = intent.getStringExtra("post_code");
 
 
         commentcount.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +190,11 @@ public class StoryActivity extends AppCompatActivity {
             rebutton.setVisibility(View.INVISIBLE);
             deletebtn.setVisibility(View.INVISIBLE);
         }
+    }
+
+    private void PostDelete() {
+        DeleteData deleteData = new DeleteData();
+        deleteData.execute("http://" + IP_ADDRESS + "/instudy/PostDeleteAndroid.php", spostcode);
     }
 
     @Override
