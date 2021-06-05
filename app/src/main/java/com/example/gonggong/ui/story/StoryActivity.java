@@ -200,6 +200,7 @@ public class StoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        CommentCount=0;
         PostUpdate();
         CommentUpdate();
     }
@@ -485,7 +486,7 @@ public class StoryActivity extends AppCompatActivity {
 
                 String POST_CODE = item.getString(TAG_POST_CODE);
 
-                if (POST_CODE.equals(spostcode)) {       // 게시글 코드가 일치하는 댓글들만 출력한다.
+                if ( POST_CODE.equals(spostcode) ) {       // 게시글 코드가 일치하는 댓글들만 출력한다.
 
                     CommentCount++;
 

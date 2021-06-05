@@ -203,7 +203,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgCommentIcon"
         android:paddingLeft="12dp"
         android:paddingEnd="6sp"
-        android:text="10"
+        android:text=""
         android:fontFamily="@font/notosanscjkkrregular"/>
 
     <ImageView

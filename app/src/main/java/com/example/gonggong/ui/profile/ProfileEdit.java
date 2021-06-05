@@ -158,7 +158,7 @@ public class ProfileEdit extends AppCompatActivity {
             public void onClick(View view) {
                 USER_NICKNAME = mEditNickname.getText().toString();         //바뀐 닉네임 값 가져오기
                 USER_INTRO = mEditProfileContents.getText().toString();  //바뀐 소개 값 가져오기
-                USER_PROFILEURL = null;
+                USER_PROFILEURL = uploadFile();
                 USER_ID = userid;                       // App 사용자 ID값 가져와서 인자 값으로 넣어주기
 
 
@@ -169,7 +169,6 @@ public class ProfileEdit extends AppCompatActivity {
                     task.execute("http://" + IP_ADDRESS + "/UserModifyAndroid.php", USER_ID, USER_NICKNAME, USER_INTRO, USER_PROFILEURL);
                     Toast.makeText(getApplicationContext(), "프로필이 수정되었습니다.", Toast.LENGTH_SHORT).show();
                     save(USER_NICKNAME);
-                    finish();
                 }
             }
         });
@@ -210,7 +209,7 @@ public class ProfileEdit extends AppCompatActivity {
         }
     }
     //upload the file
-    private void uploadFile() {
+    private String uploadFile() {
         //업로드할 파일이 있으면 수행
         if (filePath != null) {
             //업로드 진행 Dialog 보이기
@@ -225,6 +224,8 @@ public class ProfileEdit extends AppCompatActivity {
             String filename = userid + ".png";
             //storage 주소와 폴더 파일명을 지정해 준다.
             StorageReference storageRef = storage.getReferenceFromUrl("gs://gonggong-60888.appspot.com").child(userid+"/" + filename);
+
+            USER_PROFILEURL = userid+"/" + filename;
             //올라가거라...
             storageRef.putFile(filePath)
                     //성공시
@@ -233,6 +234,7 @@ public class ProfileEdit extends AppCompatActivity {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss(); //업로드 진행 Dialog 상자 닫기
                             Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     })
                     //실패시
@@ -241,6 +243,7 @@ public class ProfileEdit extends AppCompatActivity {
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
                             Toast.makeText(getApplicationContext(), "업로드 실패!", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     })
                     //진행중
@@ -251,11 +254,14 @@ public class ProfileEdit extends AppCompatActivity {
                             double progress = (100 * taskSnapshot.getBytesTransferred()) /  taskSnapshot.getTotalByteCount();
                             //dialog에 진행률을 퍼센트로 출력해 준다
                             progressDialog.setMessage("Uploaded " + ((int) progress) + "% ...");
+                            finish();
                         }
                     });
         } else {
             Toast.makeText(getApplicationContext(), "파일을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
         }
+        return USER_PROFILEURL;
+
     }
 
 
