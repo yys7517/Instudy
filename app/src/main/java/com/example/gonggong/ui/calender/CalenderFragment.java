@@ -399,7 +399,10 @@ public class CalenderFragment extends Fragment {
                 int MM = Integer.parseInt(Date[1]);
                 int DD = Integer.parseInt(Date[2]);
 
-                mMaterialCalendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.from(YY, MM - 1, DD))));
+                if( PostWID.equals(UserID) ) {
+                    mMaterialCalendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.from(YY, MM - 1, DD))));
+                }
+
 
                 mCalenderDatas.add(mCalenderData);
             }
