@@ -1,6 +1,6 @@
 package com.example.gonggong.ui.calender;
 
-public class CalanderData {
+public class CalenderData {
     private String PostWID;
     private String PostDate;
 

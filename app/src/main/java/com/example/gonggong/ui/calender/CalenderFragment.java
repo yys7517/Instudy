@@ -14,12 +14,17 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gonggong.R;
 import com.example.gonggong.ui.calender.decorators.EventDecorator;
 import com.example.gonggong.ui.calender.decorators.OneDayDecorator;
 import com.example.gonggong.ui.calender.decorators.SaturdayDecorator;
 import com.example.gonggong.ui.calender.decorators.SundayDecorator;
+import com.example.gonggong.ui.home.HomeData;
+import com.example.gonggong.ui.home.HomeFragment;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -45,10 +50,20 @@ public class CalenderFragment extends Fragment {
     private static String IP_ADDRESS = "211.211.158.42";
     private static String TAG = "phptest";
     private String mJsonString;
+    private int Year, Month, Day;
 
-    private ArrayList<CalanderData> mCalanderDatas = new ArrayList<>();
+    private String SignIn_ID = "1633866283";
+
+    private String RequestType = "CalenderDataUpdate";
+
+    private ArrayList<CalenderData> mCalenderDatas = new ArrayList<>();
+    private ArrayList<HomeData> mHomeDatas = new ArrayList<>();
+
+    private CalenderAdapter adapter;
 
     private MaterialCalendarView mMaterialCalendarView;
+    private RecyclerView mRecyclerViewCalender;
+    private RecyclerView.LayoutManager mLayoutManager;
     private Button mButtonTest;
 
     private SundayDecorator mSundayDecorator = new SundayDecorator();
@@ -59,6 +74,17 @@ public class CalenderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_calender, container, false);
+
+        mRecyclerViewCalender = (RecyclerView) rootView.findViewById(R.id.mRecyclerViewCalender);
+        mRecyclerViewCalender.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerViewCalender.setLayoutManager(mLayoutManager);
+        mRecyclerViewCalender.scrollToPosition(0);
+        adapter = new CalenderAdapter(mHomeDatas);
+
+        mRecyclerViewCalender.setAdapter(adapter);
+        mRecyclerViewCalender.setItemAnimator(new DefaultItemAnimator());
+
 
         mMaterialCalendarView = (MaterialCalendarView) rootView.findViewById(R.id.mMaterialCalendarView);
 
@@ -75,33 +101,39 @@ public class CalenderFragment extends Fragment {
                 mOneDayDecorator
         );
 
-
         mMaterialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                int Year = date.getYear();
-                int Month = date.getMonth() + 1;
-                int Day = date.getDay();
 
-                Log.i("Year test", Year + "");
-                Log.i("Month test", Month + "");
-                Log.i("Day test", Day + "");
+                Year = date.getYear();
+                Month = date.getMonth() + 1;
+                Day = date.getDay();
+
+                mHomeDatas.clear();
+                CalenderDataUpdate();
 
             }
         });
 
-        mButtonTest = (Button) rootView.findViewById(R.id.mButtonTest);
-        mButtonTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("Test", "테스트 메세지");
-
-                CalenderFragment.GetData task = new CalenderFragment.GetData();
-                task.execute("http://" + IP_ADDRESS + "/instudy/GetCalander.php", "");
-            }
-        });
+        HomeDataUpdate();
 
         return rootView;
+    }
+
+    public void CalenderDataUpdate() {      //달력 게시물 작성 확인 새로고침 메소드
+        RequestType = "CalenderDataUpdate";
+        mCalenderDatas.clear();             //CalenderData 목록 clear
+        adapter.notifyDataSetChanged();     // 게시글 목록 갱신
+        CalenderFragment.GetData task = new CalenderFragment.GetData();
+        task.execute("http://" + IP_ADDRESS + "/instudy/GetImgExample.php", "");
+    }
+
+    public void HomeDataUpdate() {          //게시글 새로고침 메소드
+        RequestType = "HomeDataUpdate";
+        mHomeDatas.clear();                 //HomeData 목록 clear
+        adapter.notifyDataSetChanged();     // 게시글 목록 갱신
+        CalenderFragment.GetData task = new CalenderFragment.GetData();
+        task.execute("http://" + IP_ADDRESS + "/instudy/GetImgExample.php", "");
     }
 
     private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
@@ -126,12 +158,12 @@ public class CalenderFragment extends Fragment {
             for (int i = 0; i < Time_Result.length; i++) {
                 CalendarDay day = CalendarDay.from(calendar);
                 String[] time = Time_Result[i].split(",");
-                int year = Integer.parseInt(time[0]);
-                int month = Integer.parseInt(time[1]);
-                int dayy = Integer.parseInt(time[2]);
+                int YY = Integer.parseInt(time[0]);
+                int MM = Integer.parseInt(time[1]);
+                int DD = Integer.parseInt(time[2]);
 
                 dates.add(day);
-                calendar.set(year, month - 1, dayy);
+                calendar.set(YY, MM - 1, DD);
             }
 
             return dates;
@@ -159,18 +191,27 @@ public class CalenderFragment extends Fragment {
 
         @Override
         protected void onPostExecute(String result) {
+
             super.onPostExecute(result);
-
             progressDialog.dismiss();
-
-            Log.d(TAG, "response - " + result);
 
             if (result == null) {
 
             } else {
 
                 mJsonString = result;
-                DataProcess();   //  showBoard 메소드 실행
+
+                if (RequestType == "HomeDataUpdate") {
+                    CalenderDataProcess();   //  DataProcess 메소드 실행
+                    Log.i("Request Type", "HomeDataUpdate");
+                } else if (RequestType == "CalenderDataUpdate") {
+                    Log.i("Request Type", "CalenderDataUpdate");
+                    HomeDataProcess(Year, Month, Day);
+                } else {
+                    Log.e("Error", "Unknown Request");
+                }
+
+
             }
         }
 
@@ -237,9 +278,71 @@ public class CalenderFragment extends Fragment {
         }
     }
 
-    private void DataProcess() {
+    private void HomeDataProcess(int YY, int MM, int DD) {
+        Log.i("YYMMDD", "I Get -> " + YY + "-" + MM + "-" + DD);
 
-        String TAG_JSON = "PostCount Table";
+        String TAG_JSON = "Post Table";
+        String TAG_CODE = "PostCode";
+        String TAG_POST_WID = "PostWID";
+        String TAG_NICKNAME = "PostNickName";
+        String TAG_DATE = "PostDate";
+        String TAG_CONTENTS = "PostContent";
+        String TAG_IMGPATH = "PostImgPath";
+
+
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for (int i = jsonArray.length() - 1; i >= 0; i--) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String POST_CODE = item.getString(TAG_CODE);
+                String POST_WID = item.getString(TAG_POST_WID);
+                String POST_NICKNAME = item.getString(TAG_NICKNAME);
+                String POST_CONTENTS = item.getString(TAG_CONTENTS);
+                String POST_DATE = item.getString(TAG_DATE);
+                String POST_IMGPATH = item.getString(TAG_IMGPATH);
+
+                String Date = POST_DATE.substring(0, 10);
+
+                String[] Dates = Date.split("-");
+
+                int Y = Integer.parseInt(Dates[0]);
+                int M = Integer.parseInt(Dates[1]);
+                int D = Integer.parseInt(Dates[2]);
+
+                if (YY == Y && MM == M && DD == D) {
+
+                    if(POST_WID == "1633866283") {
+                        HomeData mHomeData = new HomeData();
+
+                        mHomeData.setCode(POST_CODE); // 게시글 코드
+                        mHomeData.setImgPost(POST_IMGPATH); // 게시글 사진 경로
+
+                        mHomeData.setNickname(POST_NICKNAME); // 게시글 작성자
+                        mHomeData.setDate(POST_DATE); // 게시글 작성 날짜
+                        mHomeData.setContents(POST_CONTENTS); // 게시글 내용
+
+                        mHomeData.setUserid(POST_WID);   // 게시글 작성자 ID
+
+                        mHomeDatas.add(mHomeData);
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+        } catch (JSONException e) {
+
+            Log.d(TAG, "showResult : ", e);
+        }
+
+    }
+
+    private void CalenderDataProcess() {
+
+        String TAG_JSON = "Post Table";
         String TAG_PostWID = "PostWID";
         String TAG_PostDate = "PostDate";
 
@@ -254,11 +357,10 @@ public class CalenderFragment extends Fragment {
 
                 String PostWID = item.getString(TAG_PostWID);
                 String PostDate = item.getString(TAG_PostDate).substring(0, 10);
+                CalenderData mCalenderData = new CalenderData();
 
-                CalanderData mCalanderData = new CalanderData();
-
-                mCalanderData.setPostWID(PostWID); // 게시글 코드
-                mCalanderData.setPostDate(PostDate); // 게시글 사진 경로
+                mCalenderData.setPostWID(PostWID); // 게시글 코드
+                mCalenderData.setPostDate(PostDate); // 게시글 사진 경로
 
                 String[] Date = PostDate.split("-");
 
@@ -268,7 +370,7 @@ public class CalenderFragment extends Fragment {
 
                 mMaterialCalendarView.addDecorator(new EventDecorator(Color.RED, Collections.singleton(CalendarDay.from(YY, MM - 1, DD))));
 
-                mCalanderDatas.add(mCalanderData);
+                mCalenderDatas.add(mCalenderData);
             }
         } catch (JSONException e) {
 
