@@ -196,6 +196,7 @@ public class BoardWriteActivity extends AppCompatActivity {
                             double progress = (100 * taskSnapshot.getBytesTransferred()) /  taskSnapshot.getTotalByteCount();
                             //dialog에 진행률을 퍼센트로 출력해 준다
                             progressDialog.setMessage("Uploaded " + ((int) progress) + "% ...");
+
                         }
                     });
         } else {

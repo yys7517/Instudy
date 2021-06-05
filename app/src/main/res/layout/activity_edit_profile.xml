@@ -81,20 +81,6 @@
             android:tint="#FFFFFF"
     />
 
-    <ImageButton
-        android:id="@+id/imgbtnSave"
-        android:layout_width="27dp"
-        android:layout_height="27dp"
-        android:layout_marginRight="100dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
-        app:layout_constraintBottom_toBottomOf="@id/cardView"
-        android:background="@drawable/content_save"
-        android:src="@drawable/camera_outline"
-        android:backgroundTint="@color/colorPrimary"
-        android:tint="#FFFFFF"
-        />
-
     <EditText
         android:id="@+id/nicknameViewedit"
         android:layout_width="wrap_content"

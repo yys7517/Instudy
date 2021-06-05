@@ -93,14 +93,6 @@ public class ProfileEdit extends AppCompatActivity {
 
         profileimgview = (CircleImageView) findViewById(R.id.cardView);
 
-        //이미지 save
-        imgsave = (ImageButton) findViewById(R.id.imgbtnSave);
-        imgsave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                uploadFile();
-            }
-        });
 
         Intent mIntent = getIntent(); //인텐트 frag4에서 해줘야함
 
@@ -214,7 +206,7 @@ public class ProfileEdit extends AppCompatActivity {
         if (filePath != null) {
             //업로드 진행 Dialog 보이기
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("업로드중...");
+            progressDialog.setTitle("프로필 사진 업로드중...");
             progressDialog.show();
 
             //storage
@@ -233,7 +225,7 @@ public class ProfileEdit extends AppCompatActivity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss(); //업로드 진행 Dialog 상자 닫기
-                            Toast.makeText(getApplicationContext(), "업로드 완료!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "프로필 사진 업로드 완료!", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     })
@@ -242,7 +234,7 @@ public class ProfileEdit extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(getApplicationContext(), "업로드 실패!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "프로필 업로드 실패!", Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     })
@@ -254,11 +246,10 @@ public class ProfileEdit extends AppCompatActivity {
                             double progress = (100 * taskSnapshot.getBytesTransferred()) /  taskSnapshot.getTotalByteCount();
                             //dialog에 진행률을 퍼센트로 출력해 준다
                             progressDialog.setMessage("Uploaded " + ((int) progress) + "% ...");
-                            finish();
                         }
                     });
         } else {
-            Toast.makeText(getApplicationContext(), "파일을 먼저 선택하세요.", Toast.LENGTH_SHORT).show();
+            finish();
         }
         return USER_PROFILEURL;
 
