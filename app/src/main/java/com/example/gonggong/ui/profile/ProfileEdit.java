@@ -52,7 +52,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileEdit extends AppCompatActivity {
 
-    private String USER_ID, USER_NICKNAME, USER_CONTENTS, USER_PROFILEURL = null, USER_TESTID = "Tester01";
+    private String USER_ID, USER_NICKNAME, USER_INTRO, USER_PROFILEURL;
+
+    private String Default_nick, Default_intro;
 
     private static String IP_ADDRESS = "211.211.158.42/instudy";
     private static String TAG1 = "프로필수정 게시물";
@@ -82,6 +84,12 @@ public class ProfileEdit extends AppCompatActivity {
 
         mTextViewPostResult = findViewById(R.id.mTextViewPostResult); //실패 성공 알려줌 하지만 안씀뷰
 
+
+
+        //SharedPreferences
+        appData = getSharedPreferences("appData", MODE_PRIVATE);
+        String userid = appData.getString("ID", ""); // App 사용자 ID
+
         profileimgview = (CircleImageView) findViewById(R.id.cardView);
 
         //이미지 save
@@ -94,10 +102,13 @@ public class ProfileEdit extends AppCompatActivity {
         });
 
         Intent mIntent = getIntent(); //인텐트 frag4에서 해줘야함
-        String Default_nickname = mIntent.getStringExtra("nickname");
-        String Defalut_contents = mIntent.getStringExtra("contents");
-        Log.i("TAG1", "NICK : " + Default_nickname);
-        Log.i("TAG1", "CONTENTS : " + Defalut_contents);
+
+        Default_nick = mIntent.getStringExtra("nickname");
+        USER_PROFILEURL = mIntent.getStringExtra("profileurl");
+        Default_intro = mIntent.getStringExtra("introduce");
+
+        Log.i("TAG1", "NICK : " + Default_nick);
+        Log.i("TAG1", "CONTENTS : " + Default_intro);
 
         //프로필 이미지 선택&변경
         imgbtncamera = (ImageButton) findViewById(R.id.imgbtnCamera);
@@ -124,12 +135,20 @@ public class ProfileEdit extends AppCompatActivity {
         //EditText
         mEditNickname = (EditText) findViewById(R.id.nicknameViewedit);
         mEditProfileContents = (EditText) findViewById(R.id.edtSetProfileContents);
-        mEditNickname.setText(Default_nickname);                //intent 닉네임값 받아옴
-        mEditProfileContents.setText(Defalut_contents);         //intent contents값 받아옴
 
-        //SharedPreferences
-        appData = getSharedPreferences("appData", MODE_PRIVATE);
-        String userid = appData.getString("ID", ""); // App 사용자 ID
+        mEditNickname.setText(Default_nick);                //기존 닉네임값 받아옴
+
+        if ( Default_intro.equals("간단한 자기소개글을 적어보세요") )
+        {
+            mEditProfileContents.setText("");
+        }
+        else {
+            Log.d("intent","기존 내용 : "+Default_intro);
+            mEditProfileContents.setText( Default_intro ); //기존 intro값 받아옴
+        }
+
+
+
 
         //확인버튼
         validation = (Button) findViewById(R.id.mButtonStart);
@@ -137,8 +156,8 @@ public class ProfileEdit extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 USER_NICKNAME = mEditNickname.getText().toString();         //바뀐 닉네임 값 가져오기
-                USER_CONTENTS = mEditProfileContents.getText().toString();  //바뀐 소개 값 가져오기
-//              USER_PROFILEURL // 미구현
+                USER_INTRO = mEditProfileContents.getText().toString();  //바뀐 소개 값 가져오기
+                USER_PROFILEURL = null;
                 USER_ID = userid;                       // App 사용자 ID값 가져와서 인자 값으로 넣어주기
 
 
@@ -146,7 +165,7 @@ public class ProfileEdit extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "닉네임을 더 길게 입력해주세요.", Toast.LENGTH_SHORT).show();
                 } else {
                     EditData task = new EditData();
-                    task.execute("http://" + IP_ADDRESS + "/UserModifyAndroid.php", USER_TESTID, USER_NICKNAME, USER_CONTENTS, USER_PROFILEURL);
+                    task.execute("http://" + IP_ADDRESS + "/UserModifyAndroid.php", USER_ID, USER_NICKNAME, USER_INTRO, USER_PROFILEURL);
                     Toast.makeText(getApplicationContext(), "프로필이 수정되었습니다.", Toast.LENGTH_SHORT).show();
                     save(USER_NICKNAME);
                     finish();
@@ -165,7 +184,7 @@ public class ProfileEdit extends AppCompatActivity {
             Log.d(TAG, "uri:" + String.valueOf(filePath));
             try {
                 //Uri 파일을 Bitmap으로 만들어서 ImageView에 집어 넣는다.
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(ProfileEdit.this.getContentResolver(), filePath);
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap( ProfileEdit.this.getContentResolver(), filePath );
                 profileimgview.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
