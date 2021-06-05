@@ -370,7 +370,7 @@ public class ProfileEdit extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 //이미지 로드 실패시
-                Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT).show();
+                Glide.with(getApplicationContext()).load(R.drawable.default_user).into(profileimgview);
             }
         });
     }

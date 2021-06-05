@@ -24,6 +24,8 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
 
@@ -49,7 +51,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imgProfile;
+        public CircleImageView imgProfile;
         public ImageView imgPost;
         public TextView nickname;
         public TextView contents;
@@ -119,6 +121,22 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             public void onFailure(@NonNull Exception exception) {
                 //이미지 로드 실패시
                 Glide.with(holder.itemView.getContext()).load(R.drawable.no_image).into(holder.imgPost);
+            }
+        });
+
+        //프로필 뽑기
+        storageRef.child(iData.get(position).getUserid()+"/"+iData.get(position).getUserid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지 로드 성공시
+                Glide.with(holder.itemView.getContext()).load(uri).into(holder.imgProfile);   //프로필 사진
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //이미지 로드 실패시
+                Glide.with(holder.itemView.getContext()).load(R.drawable.default_user).into(holder.imgProfile);
             }
         });
 

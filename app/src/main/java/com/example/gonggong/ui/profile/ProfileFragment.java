@@ -483,7 +483,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 //이미지 로드 실패시
-                Toast.makeText(getActivity(), "실패", Toast.LENGTH_SHORT).show();
+                Glide.with(getActivity()).load(R.drawable.default_user).into(userimg);
             }
         });
     }
