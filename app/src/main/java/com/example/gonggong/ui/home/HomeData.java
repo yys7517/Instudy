@@ -11,7 +11,6 @@ public class HomeData {
     private String date; //날짜
 
     private String imgPost; // 게시글 사진 경로
-    private String imgProfile; // 프로필 사진 경로
 
     //게시물 작성자 ID
     public String getUserid() {

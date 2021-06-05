@@ -1,6 +1,9 @@
 package com.example.gonggong.ui.calender;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,8 +26,10 @@ import com.example.gonggong.ui.calender.decorators.EventDecorator;
 import com.example.gonggong.ui.calender.decorators.OneDayDecorator;
 import com.example.gonggong.ui.calender.decorators.SaturdayDecorator;
 import com.example.gonggong.ui.calender.decorators.SundayDecorator;
+import com.example.gonggong.ui.home.HomeAdapter;
 import com.example.gonggong.ui.home.HomeData;
 import com.example.gonggong.ui.home.HomeFragment;
+import com.example.gonggong.ui.story.StoryActivity;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -59,7 +64,12 @@ public class CalenderFragment extends Fragment {
     private ArrayList<CalenderData> mCalenderDatas = new ArrayList<>();
     private ArrayList<HomeData> mHomeDatas = new ArrayList<>();
 
+    private SharedPreferences appData;
+    private String UserID;
+
     private CalenderAdapter adapter;
+
+    private HomeAdapter homeAdapter;
 
     private MaterialCalendarView mMaterialCalendarView;
     private RecyclerView mRecyclerViewCalender;
@@ -75,15 +85,39 @@ public class CalenderFragment extends Fragment {
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_calender, container, false);
 
+        //SharedPreferences
+        appData = getActivity().getSharedPreferences("appData", Context.MODE_PRIVATE);
+        UserID = appData.getString("ID", ""); // App 사용자 ID
+
         mRecyclerViewCalender = (RecyclerView) rootView.findViewById(R.id.mRecyclerViewCalender);
         mRecyclerViewCalender.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewCalender.setLayoutManager(mLayoutManager);
         mRecyclerViewCalender.scrollToPosition(0);
         adapter = new CalenderAdapter(mHomeDatas);
+        homeAdapter = new HomeAdapter(mHomeDatas);
 
         mRecyclerViewCalender.setAdapter(adapter);
         mRecyclerViewCalender.setItemAnimator(new DefaultItemAnimator());
+
+        //커스텀 리스터 객체 생성 및 전달.
+        adapter.setOnItemClickListener(new CalenderAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                // TODO : 아이템 클릭 이벤트를 플레그먼트에서 처뤼
+
+                Intent intent = new Intent(getActivity(), StoryActivity.class);
+
+                intent.putExtra("userid",mHomeDatas.get(position).getUserid());
+                intent.putExtra("post_code",mHomeDatas.get(position).getCode());
+
+                intent.putExtra("nickname", mHomeDatas.get(position).getNickname());
+                intent.putExtra("contents", mHomeDatas.get(position).getContents());
+                intent.putExtra("date", mHomeDatas.get(position).getDate());
+
+                startActivity(intent);
+            }
+        });
 
 
         mMaterialCalendarView = (MaterialCalendarView) rootView.findViewById(R.id.mMaterialCalendarView);
@@ -313,7 +347,7 @@ public class CalenderFragment extends Fragment {
                 int M = Integer.parseInt(Dates[1]);
                 int D = Integer.parseInt(Dates[2]);
 
-                if (YY == Y && MM == M && DD == D) {
+                if (YY == Y && MM == M && DD == D && POST_WID.equals(UserID) ) {
                     HomeData mHomeData = new HomeData();
 
                     mHomeData.setCode(POST_CODE); // 게시글 코드

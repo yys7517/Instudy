@@ -117,6 +117,23 @@ public class CalenderAdapter extends RecyclerView.Adapter<CalenderAdapter.ViewHo
                 //이미지 로드 실패시
             }
         });
+
+        //프로필 뽑기
+        storageRef.child(iData.get(position).getUserid()+"/"+iData.get(position).getUserid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                //이미지 로드 성공시
+                Glide.with(holder.itemView.getContext()).load(uri).into(holder.imgProfile);   //프로필 사진
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //이미지 로드 실패시
+                Glide.with(holder.itemView.getContext()).load(R.drawable.default_user).into(holder.imgProfile);
+            }
+        });
+
         holder.nickname.setText(iData.get(position).getNickname());   //닉네임
         holder.contents.setText(iData.get(position).getContents());     //내용
         holder.date.setText(iData.get(position).getDate());             //날짜
